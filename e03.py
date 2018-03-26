@@ -1,17 +1,22 @@
 # Lab 02 - Exercise 03
 
 # In order to read parameters
-import sys
+from sys import argv
 
 # List of tasks
 tasks = []
 num = -1
 
 # Reading from file
-with open(sys.argv[1], "r+") as file:
-    for line in file:
-        tasks.append(line.strip("\n"))
-file.close()
+try:
+    path = argv[1]
+    with open(path, "r+") as file:
+        for line in file:
+            tasks.append(line.strip("\n"))
+    file.close()
+except IndexError:
+    print("\nFile not provided!")
+    exit()
 
 # Main loop
 while num != 5:
@@ -49,7 +54,7 @@ while num != 5:
             for task in sorted(tasks):
                 print(task)
         elif num == 5:
-            with open(sys.argv[1], "w+") as file:
+            with open(path, "w+") as file:
                 for task in tasks:
                     file.write("%s\n" % task)
             file.close()
