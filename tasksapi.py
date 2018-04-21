@@ -1,7 +1,7 @@
 # Api for tasks bot
 import sqlite3
 
-db = sqlite3.connect("tasks.db")
+db = sqlite3.connect("tasks.db", check_same_thread=False)
 c = db.cursor()
 
 
