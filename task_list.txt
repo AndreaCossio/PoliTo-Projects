@@ -1,0 +1,6 @@
+call John for AmI project organization; 0
+buy a new mouse; 1
+find a present for Angelina's birthday; 0
+organize mega party (last week of April); 0
+book summer holidays; 1
+whatsapp Mary for a coffee; 1
