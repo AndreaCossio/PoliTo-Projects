@@ -67,7 +67,7 @@ def api_update_task(task_id):
     if request.headers['Content-Type'] == 'application/json':
         if task_id in [task["id"] for task in tasksapi.get_tasks()]:
             upd_task = request.json
-            tasksapi.update_task(upd_task["todo"], upd_task["urgent"], task_id)
+            tasksapi.update_task(task_id, upd_task["todo"], upd_task["urgent"])
             return jsonify([task for task in tasksapi.get_tasks() if task["id"] == task_id][0])
         else:
             response = jsonify({'message': "Invalid Task Id: " + str(task_id)})
