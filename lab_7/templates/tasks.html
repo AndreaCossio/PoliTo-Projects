@@ -1,0 +1,29 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Task List{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='tasks.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Task list</h1>
+
+    <!-- The div to store the tasks list. It will be populated dynamically, by Javascript -->
+    <div id="tasklist"></div>
+
+    <!-- The div to store the form to insert/update a specific task -->
+    <div id="inserttask">
+        <form id="addForm" class="form-inline" method="POST">
+            <div class="form-group">
+                Task:
+                <input type="text" id="taskDescription" class="form-control" name="description"/>
+                <input type="checkbox" class="form-check-input" id="urgentTask">
+                <label class="form-check-label" for="urgentTask">Urgent</label>
+            </div>
+            <button type="submit" class="form-control" id="addTask">Add</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
