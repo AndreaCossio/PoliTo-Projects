@@ -108,7 +108,6 @@ void writeArrayBin(int *arr, int n, char *filename) {
         fprintf(stderr, "Error writing the file %s.\n", filename);
         exit(EXIT_FAILURE);
     }
-    fprintf(fp, "\n");
 
     // Close file
     fclose(fp);
