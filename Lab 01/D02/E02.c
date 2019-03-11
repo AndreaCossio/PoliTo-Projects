@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,8 +12,8 @@ void writeArrayText(int *arr, int n, char *filename);
 void writeArrayBin(int *arr, int n, char *filename);
 
 int main(int argc, char *argv[]) {
-    
-    int n1, n2, *v1, *v2;
+
+    int n, *v, pid[2], i, status, error;
 
     // Check arguments
     if (argc != 3) {
@@ -20,33 +21,55 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    // Parse arguments
-    n1 = atoi(argv[1]);
-    n2 = atoi(argv[2]);
+    // Generate two children
+    for (i = 0; i < 2; i++) {
+        if ((pid[i] = fork()) == 0) {
 
-    // Allocate arrays
-    v1 = (int *) malloc(n1 * sizeof(int));
-    v2 = (int *) malloc(n2 * sizeof(int));
+            // Parse argument and allocate array
+            n = atoi(argv[i+1]);
+            v = malloc(n * sizeof(int));
 
-    // Generate arrays and sort them
-    generateArray(v1, n1, 45, 10);
-    generateArray(v2, n2, 40, 21);
-    qsWrapper(v1, n1);
-    qsWrapper(v2, n2);
+            // Generate array and sort
+            if (i == 0) {
+                generateArray(v, n, 45, 10);
+            } else {
+                generateArray(v, n, 40, 21);
+            }
+            qsWrapper(v, n);
 
-    // Write text files
-    writeArrayText(v1, n1, "fv1.txt");
-    writeArrayText(v2, n2, "fv2.txt");
+            // Write text and binary file
+            if (i == 0) {
+                writeArrayText(v, n, "fv1.txt");
+                writeArrayBin(v, n, "fv1.b");
+            } else {
+                writeArrayText(v, n, "fv2.txt");
+                writeArrayBin(v, n, "fv2.b");
+            }
 
-    // Write binary files
-    writeArrayBin(v1, n1, "fv1.b");
-    writeArrayBin(v2, n2, "fv2.b");
+            // Memory deallocation
+            free(v);
 
-    // Memory deallocation
-    free(v1);
-    free(v2);
+            // Exit
+            exit(i+1);
+        }
+    }
 
-    return 0;
+    // Wait children and catch their exit status
+    for (i = 0; i < 2; i++) {
+        waitpid(pid[i], &status, 0);
+        if(WEXITSTATUS(status) == i+1) {
+            printf("Child %d exited correctly; exit value: %d.\n", pid[i], WEXITSTATUS(status));
+        } else {
+            printf("Child %d terminated with error; exit value: %d.\n", pid[i], WEXITSTATUS(status));
+            error = 1;
+        }
+    }
+
+    // Exit
+    if (error)
+        exit(EXIT_FAILURE);
+    else
+        exit(EXIT_SUCCESS);
 }
 
 // Generate an array of size n given a range for even numbers and an offset
