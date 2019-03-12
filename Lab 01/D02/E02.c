@@ -58,9 +58,9 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < 2; i++) {
         waitpid(pid[i], &status, 0);
         if(WEXITSTATUS(status) == i+1) {
-            printf("Child %d exited correctly; exit value: %d.\n", pid[i], WEXITSTATUS(status));
+            fprintf(stdout, "Child %d exited correctly; exit value: %d.\n", pid[i], WEXITSTATUS(status));
         } else {
-            printf("Child %d terminated with error; exit value: %d.\n", pid[i], WEXITSTATUS(status));
+            fprintf(stderr, "Child %d terminated with error; exit value: %d.\n", pid[i], WEXITSTATUS(status));
             error = 1;
         }
     }
