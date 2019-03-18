@@ -2,48 +2,65 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <semaphore.h>
+#include <signal.h>
 #include <pthread.h>
 
 // Global variables
-int g;
-sem_t s[2];
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+int g, finish = 2, counter = 0;
+sem_t *multiply, *print, *mutex;
 
+// Prototypes
 void *routine(void *par);
+
+// Signal handler
+static void handler(int sig) {
+    if (--finish == 0) {
+        printf("Total served requests: %d\n", counter);
+        exit(EXIT_SUCCESS);
+    }
+    return;
+}
 
 int main(int argc, char *argv[]) {
 
-    int finish = 2, counter = 0;
     pthread_t tid[2];
 
-    // Initialize semaphores
-    sem_init(&s[0], 0, 0);
-    sem_init(&s[1], 0, 0);
-
-    // Create threads
-    pthread_create(&(tid[0]), NULL, routine, "fv1.b");
-    pthread_create(&(tid[1]), NULL, routine, "fv2.b");
-
-    // Main loop waiting on the semaphore
-    while (finish > 0) {
-        sem_wait(&s[0]);
-        if (g == -1) {
-            finish--;
-        } else {
-            g *= 3;
-            counter ++;
-        }
-        sem_post(&s[1]);
+    // Create signal handler
+    if (signal(SIGUSR1, handler) == SIG_ERR) {
+        fprintf(stderr, "Error SIGUSR1.\n");
+        exit(EXIT_FAILURE);
     }
 
-    // Wait threads
-    pthread_join(tid[0], NULL);
-    pthread_join(tid[1], NULL);
+    // Allocate semaphores
+    multiply = (sem_t *) malloc(sizeof(sem_t));
+    print = (sem_t *) malloc(sizeof(sem_t));
+    mutex = (sem_t *) malloc(sizeof(sem_t));
 
-    // Print stats
-    printf("Total requests: %d\n", counter);
+    // Check allocation
+    if (multiply == NULL || print == NULL || mutex == NULL) {
+        fprintf(stderr, "Error allocating semaphores.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Initialize semaphores
+    sem_init(multiply, 0, 0);
+    sem_init(print, 0, 0);
+    sem_init(mutex, 0, 1);
+
+    // Create threads
+    if (pthread_create(&(tid[0]), NULL, routine, "fv1.b") != 0 || pthread_create(&(tid[1]), NULL, routine, "fv2.b") != 0) {
+        fprintf(stderr, "Error creating thread.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Main loop waiting on the semaphore
+    while (1) {
+        sem_wait(multiply);
+        g *= 3;
+        counter ++;
+        sem_post(print);
+    }
 
     return 0;
 }
@@ -63,27 +80,23 @@ void *routine(void *par) {
     // Read loop
     while (read(fd, &x, sizeof(int)) == sizeof(int)) {
         // Mutex section
-        pthread_mutex_lock(&mutex);
+        sem_wait(mutex);
 
         g = x;
 
         // Signal and wait
-        sem_post(&s[0]);
-        sem_wait(&s[1]);
+        sem_post(multiply);
+        sem_wait(print);
 
         // Print identifier and result
-        fprintf(stdout, "%ld: %d\n", pthread_self(), g);
+        printf("ThreadID: %ld\t%d\n", pthread_self(), g);
 
         // End of mutex section
-        pthread_mutex_unlock(&mutex);
+        sem_post(mutex);
     }
 
-    // Set g = -1 to finish
-    pthread_mutex_lock(&mutex);
-    g = -1;
-    sem_post(&s[0]);
-    sem_wait(&s[1]);
-    pthread_mutex_unlock(&mutex);
+    // Send finish signal
+    raise(SIGUSR1);
 
     // Close file
     close(fd);
