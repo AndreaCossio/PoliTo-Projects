@@ -67,6 +67,10 @@ void *th1routine(void *par) {
     // Setting the timer to tmax milliseconds from now
     ts.tv_sec += tmax/1000;
     ts.tv_nsec += (tmax % 1000) * 1000000;
+    if (ts.tv_nsec >= 1000000000) {
+        ts.tv_sec += 1;
+        ts.tv_nsec -= 1000000000;
+    }
     
     // Wait no longer than tmax ms
     while (sem_timedwait(&sem, &ts) == -1) {
@@ -76,7 +80,7 @@ void *th1routine(void *par) {
             fprintf(stderr, "Wait on semaphore s returned for timeout.\n");
             exit(EXIT_FAILURE);
         } else {
-            fprintf(stderr, "Error waiting semaphore. %d\n", errno);
+            fprintf(stderr, "Error waiting semaphore.\n");
             exit(EXIT_FAILURE);
         }
     }
