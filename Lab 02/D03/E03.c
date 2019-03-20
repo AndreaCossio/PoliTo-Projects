@@ -30,8 +30,10 @@ int main(int argc, char *argv[]) {
     sem_init(&sem, 0, 0);
 
     // Create threads
-    pthread_create(&(tid[0]), NULL, th1routine, &tmax);
-    pthread_create(&(tid[1]), NULL, th2routine, NULL);
+    if (pthread_create(&(tid[0]), NULL, th1routine, &tmax) != 0 || pthread_create(&(tid[1]), NULL, th2routine, NULL) != 0) {
+        fprintf(stderr, "Error creating thread.\n");
+        exit(EXIT_FAILURE);
+    }
 
     // Wait only the first thread
     pthread_join(tid[0], NULL);

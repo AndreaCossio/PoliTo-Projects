@@ -6,7 +6,8 @@
 #include <errno.h>
 #include <sys/time.h>
 
-// Global semaphore
+// Global variables
+int timeout = 0;
 sem_t sem;
 
 // Prototypes
@@ -17,8 +18,8 @@ int wait_with_timeout(sem_t *S, int tmax);
 // Signal handler
 static void handler(int sig) {
     if (sig == SIGALRM) {
-        fprintf(stderr, "Wait on semaphore s returned for timeout.\n");
-        exit(EXIT_FAILURE);
+        timeout = 1;
+        sem_post(&sem);
     }
     return;
 }
@@ -47,8 +48,10 @@ int main(int argc, char *argv[]) {
     sem_init(&sem, 0, 0);
 
     // Create threads
-    pthread_create(&(tid[0]), NULL, th1routine, &tmax);
-    pthread_create(&(tid[1]), NULL, th2routine, NULL);
+    if (pthread_create(&(tid[0]), NULL, th1routine, &tmax) != 0 || pthread_create(&(tid[1]), NULL, th2routine, NULL) != 0) {
+        fprintf(stderr, "Error creating thread.\n");
+        exit(EXIT_FAILURE);
+    }
 
     // Wait only the first thread
     pthread_join(tid[0], NULL);
@@ -137,7 +140,12 @@ int wait_with_timeout(sem_t *S, int tmax) {
         exit(EXIT_FAILURE);
     }
 
-    printf("Wait returned normally.\n");
-    
-    return 0;
+    // Display the correct message and return
+    if (timeout) {
+        fprintf(stderr, "Wait on semaphore s returned for timeout.\n");
+        return 1;
+    } else {
+        printf("Wait returned normally.\n");
+        return 0;
+    }
 }
