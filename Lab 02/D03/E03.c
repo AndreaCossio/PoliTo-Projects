@@ -55,7 +55,7 @@ void *th1routine(void *par) {
     // Generate t [1, 5]
     t = rand() % 5 + 1;
     req.tv_nsec = t * 1000000;
-    fprintf(stdout, "Waiting on semaphore after %d milliseconds.\n", t);
+    printf("Waiting on semaphore after %d milliseconds.\n", t);
 
     // Sleeping t milliseconds
     nanosleep(&req, NULL);
