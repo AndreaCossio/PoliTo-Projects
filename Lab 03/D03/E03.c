@@ -15,6 +15,7 @@ int *vet;
 
 // Prototypes
 void qsThreadedWrapper(int *vet, int N, int size);
+void quicksort(int *vet, int l, int r);
 void *qsThreaded(void *args);
 struct params *fillStruct(int *vet, int l, int r, int size);
 
