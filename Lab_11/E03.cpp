@@ -58,12 +58,15 @@ INT _tmain(INT argc, LPTSTR argv[]) {
 		}
 	}
 
-	// Wait producers
+	// Wait master threads
 	WaitForMultipleObjects(2, tSpawns, TRUE, INFINITE);
 
 	// Release resources
 	CloseHandle(tSpawns[0]);
 	CloseHandle(tSpawns[1]);
+	CloseHandle(semaphores[0]);
+	CloseHandle(semaphores[1]);
+	CloseHandle(busy);
 
 	return 0;
 }
@@ -74,24 +77,33 @@ static DWORD WINAPI tSpawn(LPVOID arg) {
 	LPTARG param = (LPTARG)arg;
 	LPHANDLE carHandles;
 
+	// Set random seed
 	srand(time(NULL));
 
+	// Message
 	ReportInfo(_T("%s thread. t_A: %d t_T: %d number: %d\n"), (param->id == 0) ? _T("L2R") : _T("R2L"), param->time_A, param->time_T, param->cars);
 
+	// Allocate car handles
 	if ((carHandles = (LPHANDLE)malloc(param->cars * sizeof(HANDLE))) == NULL) {
 		ReportError(_T("malloc"));
-		ExitProcess(4);
+		ExitProcess(5);
 	}
 
+	// Generate cars
 	for (i = 0; i < param->cars; i++) {
 		Sleep(rand() % (param->time_A * 1000));
 		if ((carHandles[i] = (HANDLE)CreateThread(NULL, 0, tCar, arg, 0, NULL)) == NULL) {
 			ReportError(_T("CreateThread"));
-			ExitProcess(5);
+			ExitProcess(6);
 		}
 	}
 
+	// Wait cars
 	WaitForMultipleObjects(param->cars, carHandles, TRUE, INFINITE);
+	for (i = 0; i < param->cars; i++) {
+		CloseHandle(carHandles[i]);
+	}
+	free(carHandles);
 
 	ExitThread(0);
 }
