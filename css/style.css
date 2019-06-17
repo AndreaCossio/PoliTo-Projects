@@ -1,0 +1,232 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212121;
+  text-align: left;
+}
+
+hr {
+  border: .5px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.navbar {
+  height: calc(100% - 60px);
+  width: 200px;
+  position: fixed;
+  top: 60px;
+  background-color: #333;
+  overflow-x: hidden;
+  transition: 0.2s;
+  z-index: 1;
+}
+
+.navbar a {
+  display: block;
+  color: #fafafa;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  background-color: #ddd;
+  color: #212121;
+}
+
+.navbar a.active {
+  background-color: #ff5722;
+}
+
+.navbarToggle {
+  display: none;
+  position: fixed;
+  left: 15px;
+  z-index: 1;
+}
+
+.navbarToggle span {
+  display: block;
+  width: 25px;
+  height: 2px;
+  margin-bottom: 5px;
+  position: relative;
+  background: #fafafa;
+  border-radius: 2px;
+  z-index: 1;
+  transition: 0.2s;
+}
+
+.navbarToggle .first {
+  transform-origin: 0% 0%;
+}
+
+.navbarToggle .third {
+  transform-origin: 0% 100%;
+  margin-bottom: 0;
+}
+
+.toggled span {
+  opacity: 1;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.toggled .second {
+  opacity: 0;
+  transform: rotate(0deg) scale(0.2, 0.2);
+}
+
+.toggled .third {
+  transform: rotate(-45deg) translate(-1px, 1px);
+}
+
+.topheader {
+  width: 100%;
+  height: 60px;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+}
+
+.topheader h1 {
+  width: 200px;
+  color: #fafafa;
+  margin: 0;
+  font-size: 24px;
+  text-align: center;
+}
+
+.main {
+  overflow: hidden;
+  min-height: calc(100vh - 60px);
+  margin-top: 60px;
+  margin-left: 200px;
+  transition: 0.2s;
+  background-color: #e0e0e0;
+  text-align: center;
+}
+
+.form-container {
+  background-color: #fafafa;
+  width: 75%;
+  max-width: 500px;
+  margin: 100px;
+  display: inline-block;
+}
+
+.form-container form {
+  padding: 30px;
+  text-align: left;
+}
+
+.form-title h1 {
+  margin: 0;
+}
+
+.form-title span {
+  color: #f44336;
+  font-size: .9rem;
+}
+
+.input-container {
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0;
+  display: inline-block;
+  border: 1px solid #e0e0e0;
+  background: #f5f5f5;
+  font-family: 'Roboto', sans-serif !important;
+  outline: none;
+}
+
+.input-container input:focus, .input-container input:focus {
+  background-color: #eeeeee;
+  outline: none;
+}
+
+.input-container span {
+  display: block;
+  color: #424242;
+  font-size: .75rem;
+}
+
+.input-container hr {
+  margin-bottom: 5px;
+}
+
+.submit-container {
+  text-align: center;
+}
+
+.submitbtn {
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  width: 50%;
+  font: 400 16px 'Roboto';
+  font-family: sans-serif;
+  background-color: #ff5722;
+}
+  
+.submitbtn:hover {
+  opacity:1;
+}
+
+.no-js {
+  display: none;
+}
+
+.no-cookies {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .navbar {
+    width: 0px;
+  }
+
+  .open {
+    width: 200px;
+  }
+
+  .topheader {
+    justify-content: center;
+  }
+
+  .topheader h1 {
+    margin-left: 0;
+  }
+
+  .navbarToggle {
+    display: block;
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .form-container {
+    margin: 40px;
+  }
+
+  .submitbtn {
+    width: 80%;
+  }
+}
