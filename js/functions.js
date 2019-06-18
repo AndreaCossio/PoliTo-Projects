@@ -1,4 +1,11 @@
 function openNav() {
-    document.getElementsByClassName("navbarToggle")[0].classList.toggle("toggled");
-    document.getElementById("main-aside").classList.toggle("open");
+    $(".navbarToggle").toggleClass("toggled");
+    $("#main-aside").toggleClass("open");
 }
+
+$(document).ready(function() {
+    if (!navigator.cookieEnabled) {
+        $(".main-container").hide();
+        $(".no-cookies").show();
+    }
+})

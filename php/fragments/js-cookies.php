@@ -11,10 +11,3 @@
         .no-js{display:block;}
     </style>
 </noscript>
-
-<script type="text/javascript">
-    if (!navigator.cookieEnabled) {
-        document.getElementsByClassName("main-container")[0].style.display = "none";
-        document.getElementsByClassName("no-cookies")[0].style.display = "block";
-    }
-</script>

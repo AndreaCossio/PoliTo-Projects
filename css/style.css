@@ -59,7 +59,7 @@ hr {
   background: #fafafa;
   border-radius: 2px;
   z-index: 1;
-  transition: width 0.2s;
+  transition: 0.2s;
 }
 
 .navbarToggle .first {
