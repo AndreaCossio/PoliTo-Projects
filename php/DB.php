@@ -11,7 +11,6 @@ class DatabaseHelper {
         require_once "Config/db_config.php";
         $this->_connection = new mysqli($default_host, $default_user, $default_pw, $default_db);
         if ($this->_connection->connect_errno) {
-            echo "<script type='text/javascript'>console.log('Failed to connect to MySQL: (" . $this->_connection->connect_errno . ") " . $this->_connection->connect_error . "');</script>";
             die("Failed to connect to MySQL: " . $this->_connection->connect_error);
         }
     }
@@ -29,6 +28,18 @@ class DatabaseHelper {
         return self::$_instance;
     }
 
+    private function startTransaction() {
+        $this->_connection->begin_transaction();
+    }
+
+    private function endTransaction() {
+        $this->_connection->commit();
+    }
+
+    private function rollback() {
+        $this->_connection->rollback();
+    }
+
     public function loginUser($email, $pwd) {
         // Validation
         try {
@@ -38,11 +49,11 @@ class DatabaseHelper {
         }
 
         // Check if the user exists
-        $stmt = $this->_connection->prepare("SELECT * FROM users WHERE email=?;");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $user = $stmt->get_result();
-        $stmt->close();
+        try {
+            $user = $this->getUser($email);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
         if ($user->num_rows === 0) {
             // Privacy message: don't tell that the email is not in the database.
             return "Incorrect password or email.";
@@ -75,30 +86,32 @@ class DatabaseHelper {
 
         // Check if user already exists
         $this->startTransaction();
-        $stmt = $this->_connection->prepare("SELECT * FROM users WHERE email=? FOR UPDATE;");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $user = $stmt->get_result();
-        $stmt->close();
+        try {
+            $user = $this->getUserForUpdate($email);
+        } catch (Exception $e) {
+            $this->rollback();
+            die($e->getMessage());
+        }
         if ($user->num_rows > 0) {
             $this->rollback();
             return "The user already exists.";
         }
 
         // Otherwise create it
-        $stmt = $this->_connection->prepare("INSERT INTO users (email, password) VALUES (?, ?);");
-        $hash = password_hash($pwd, PASSWORD_DEFAULT);
-        $stmt->bind_param("ss", $email, $hash);
-        $stmt->execute();
-        $stmt->close();
+        try {
+            $this->createUser($email, $pwd);
+        } catch (Exception $e) {
+            $this->rollback();
+            die($e->getMessage());
+        }
         $this->endTransaction();
-
+        
         // Fetch user data to set the session
-        $stmt = $this->_connection->prepare("SELECT * FROM users WHERE email=?;");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $user_data = $stmt->get_result()->fetch_assoc();
-        $stmt->close();
+        try {
+            $user_data = $this->getUser($email)->fetch_assoc();
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
         setSession($user_data['id'], $user_data['email']);
         redirect("/");
     }
@@ -112,15 +125,48 @@ class DatabaseHelper {
         }
     }
 
-    private function startTransaction() {
-        $this->_connection->begin_transaction();
+    private function getUser($email) {
+        if (!($stmt = $this->_connection->prepare("SELECT * FROM users WHERE email=?;"))) {
+            throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
+        }
+        if (!$stmt->bind_param("s", $email)) {
+            throw new Exception("Prepare failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        $user = $stmt->get_result();
+        $stmt->close();
+        return $user;
     }
 
-    private function endTransaction() {
-        $this->_connection->commit();
+    private function getUserForUpdate($email) {
+        if (!($stmt = $this->_connection->prepare("SELECT * FROM users WHERE email=? FOR UPDATE;"))) {
+            throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
+        }
+        if (!$stmt->bind_param("s", $email)) {
+            throw new Exception("Prepare failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        $user = $stmt->get_result();
+        $stmt->close();
+        return $user;
     }
 
-    private function rollback() {
-        $this->_connection->rollback();
+    private function createUser($email, $pwd) {
+        if (!($stmt = $this->_connection->prepare("INSERT INTO users (email, password) VALUES (?, ?);"))) {
+            throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
+        }
+        $hash = password_hash($pwd, PASSWORD_DEFAULT);
+        if (!$stmt->bind_param("ss", $email, $hash)) {
+            throw new Exception("Prepare failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        $stmt->close();
+        return;
     }
 }
