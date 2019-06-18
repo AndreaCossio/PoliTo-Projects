@@ -5,6 +5,11 @@ function startSession() {
     }
 }
 
+function setSession($id, $email) {
+    $_SESSION['id'] = $id;
+    $_SESSION['email'] = $email;
+}
+
 function destroySession() {
     $_SESSION = array();
     if (ini_get("session.use_cookies")) {
@@ -31,7 +36,7 @@ function forceHTTPS() {
 function requireCookies() {
     setcookie("cookies", "true");
     if (!(isset($_COOKIE['cookies']) && $_COOKIE['cookies'] = "true")) {
-        echo "<style>.main-container{display:none;}.no-cookies{display:block;}</style>";
+        echo "<style type='text/css'>.main-container{display:none;}.no-cookies{display:block;}</style>";
     }
 }
 

@@ -49,15 +49,15 @@
                     <div class="input-container">
                         <label for="login-email"><b>Email</b></label>
                         <span>Your personal email.</span>
-                        <input type="email" name="login-email" placeholder="example@email.com" required>
+                        <input type="email" name="login-email" placeholder="example@email.com" tabindex="1" required>
                     </div>
                     <div class="input-container">
                         <label for="login-pwd"><b>Password</b></label>
                         <span>Your personal password.</span>
-                        <input type="password" name="login-pwd" placeholder="Password" required>
+                        <input type="password" name="login-pwd" placeholder="Password" tabindex="2" required>
                     </div>
                     <div class="submit-container">
-                        <button type="submit" name="login-submit" class="submitbtn" >Login</button>
+                        <button type="submit" name="login-submit" class="submitbtn" tabindex="3">Login</button>
                     </div>
                 </form>
             </div>

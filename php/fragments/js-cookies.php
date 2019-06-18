@@ -6,13 +6,13 @@
 </div>
 
 <noscript>
-    <style>
+    <style type="text/css">
         .main-container{display:none;}
         .no-js{display:block;}
     </style>
 </noscript>
 
-<script>
+<script type="text/javascript">
     if (!navigator.cookieEnabled) {
         document.getElementsByClassName("main-container")[0].style.display = "none";
         document.getElementsByClassName("no-cookies")[0].style.display = "block";
