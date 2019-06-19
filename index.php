@@ -1,24 +1,8 @@
 <?php
     require_once "php/functions.php";
-    
-    startSession();
 
-    if (isset($_SESSION['id'])) {
-        // Force HTTPS
-        forceHTTPS();
-
-        // Grab the time
-        $now = time();
-        $inactivity = 120; // 2 minutes
-
-        // Manage inactivity
-        if (isset($_SESSION['last_action'])) {
-            if (($now - $_SESSION['last_action']) > $inactivity) {
-                destroySession();
-                redirect("login.php?error=expired");
-            }
-        }
-        $_SESSION['last_action'] = $now;
+    if (sessionExpired()) {
+        redirect("./login.php?error=expired");
     }
 ?>
 
@@ -37,10 +21,28 @@
 
     <div class="main">
         <div class="main-container">
-            <span>Hey</span>
         </div>
         <?php require_once "php/fragments/js-cookies.php"?>
     </div>
+
+    <script type="text/javascript" src="/js/MVC/Seat.js"></script>
+    <script type="text/javascript" src="/js/MVC/Seatmap.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.post("/php/ajax/getSeatMap.php", function(json) {
+                var model = new SeatmapModel(json,
+                    <?php
+                        if (isset($_SESSION['userId'])) {
+                            echo $_SESSION['userId'] . ", true";
+                        } else {
+                            echo -1 . ", false";
+                        }
+                    ?>
+                );
+                var view = new SeatmapView(model, $(".main-container"));
+            }, "JSON");
+        });
+    </script>
 
 <?php
     require "php/fragments/footer.php"

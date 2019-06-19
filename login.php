@@ -10,11 +10,13 @@
     // Perform login if coming from the form
     if (isset($_POST['login-submit'])) {
         $error = DatabaseHelper::getInstance()->loginUser($_POST['login-email'], $_POST['login-pwd']);
+        if (empty($error))
+            redirect("./");
     }
 
-    // Destroy session if the user was logged
-    if (isset($_SESSION['id'])) {
-        redirect("/");
+    // Redirect to homepage
+    if (isset($_SESSION['userId'])) {
+        redirect("./");
     }
 ?>
 

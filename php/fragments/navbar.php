@@ -2,7 +2,7 @@
     <nav class="navbar">
     <?php
         if (strpos($_SERVER['SCRIPT_NAME'], "index")) {
-            if (isset($_SESSION['id'])) {
+            if (isset($_SESSION['userId'])) {
                 echo '  <a href="javascript:void(0)" class="active">Home</a>
                         <a href="logout.php">Logout</a>';
             } else {

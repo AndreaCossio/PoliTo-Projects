@@ -193,6 +193,53 @@ hr {
   display: none;
 }
 
+.seatmap-container {
+  background-color: #fafafa;
+  width: 75%;
+  margin: 100px;
+  display: inline-block;
+  padding: 20px;
+}
+
+.seat-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.seat {
+  width: 72px;
+  height: 48px;
+  margin: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seat.purchased {
+  background-color: #d32f2f;
+}
+
+.seat.reserved {
+  background-color: #ff5722;
+}
+
+.seat.reserved-me {
+  background-color: #ffeb3b;
+}
+
+.seat.free {
+  background-color: #4caf50;
+}
+
+.seat span {
+  color: #fafafa;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 1rem;
+  cursor: default;
+}
+
 @media (max-width: 720px) {
   .nav-container {
     width: 0px;
@@ -226,5 +273,20 @@ hr {
 
   .submitbtn {
     width: 80%;
+  }
+
+  .seatmap-container {
+    margin: 20px;
+    width: calc(100% - 40px);
+  }
+
+  .seat {
+    width: 48px;
+    height: 36px;
+    margin: 5px;
+  }
+
+  .seat span {
+    font-size: 14px;
   }
 }

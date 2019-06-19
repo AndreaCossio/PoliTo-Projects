@@ -6,8 +6,31 @@ function startSession() {
 }
 
 function setSession($id, $email) {
-    $_SESSION['id'] = $id;
+    startSession();
+    $_SESSION['userId'] = $id;
     $_SESSION['email'] = $email;
+}
+
+function sessionExpired() {
+    startSession();
+    if (isset($_SESSION['userId'])) {
+        // Force HTTPS
+        forceHTTPS();
+
+        // Grab the time
+        $now = time();
+        $inactivity = 120; // 2 minutes
+
+        // Manage inactivity
+        if (isset($_SESSION['last_action'])) {
+            if (($now - $_SESSION['last_action']) > $inactivity) {
+                destroySession();
+                return true;
+            }
+        }
+        $_SESSION['last_action'] = $now;
+    }
+    return false;
 }
 
 function destroySession() {
@@ -21,7 +44,7 @@ function destroySession() {
 
 function logout() {
     startSession();
-    if (isset($_SESSION['id'])) {
+    if (isset($_SESSION['userId'])) {
         destroySession();
     }
 }
@@ -41,7 +64,7 @@ function requireCookies() {
 }
 
 function redirect($url) {
-    header("Location: " . $url, true, 303);
+    header("Location: ". $url, true, 303);
     exit();
 }
 ?>

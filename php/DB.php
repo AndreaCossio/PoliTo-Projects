@@ -4,6 +4,9 @@ require_once "functions.php";
 
 class DatabaseHelper {
 
+    public const ROWS = 10;
+    public const COLS = 6;
+
     private $_connection;
     private static $_instance = null;
 
@@ -64,8 +67,8 @@ class DatabaseHelper {
 
         // Verify password
         if (password_verify($pwd, $user_data['password'])) {
-            setSession($user_data['id'], $user_data['email']);
-            redirect("/");
+            setSession($user_data['userId'], $user_data['email']);
+            return "";
         } else {
             return "Incorrect password or email.";
         }
@@ -112,8 +115,106 @@ class DatabaseHelper {
         } catch (Exception $e) {
             die($e->getMessage());
         }
-        setSession($user_data['id'], $user_data['email']);
-        redirect("/");
+        setSession($user_data['userId'], $user_data['email']);
+        return "";
+    }
+
+    public function fetchSeatMap() {
+
+        $rows = self::ROWS;
+        $cols = self::COLS;
+        $seatmap = array();
+
+        try {
+            $result = $this->getSeatMap();
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+
+        for ($i=0; $i<$rows; $i++) {
+            for ($j=0; $j<$cols; $j++) {
+                $row = $result->fetch_assoc();
+                $seatmap[$row['seatId']] = array(
+                    "seatId" => $row['seatId'],
+                    "row" => $row['row'],
+                    "col" => $row['col'],
+                    "userId" => $row['userId'],
+                    "status" => $row['status']
+                );
+            }
+        }
+        $seatmap[$rows * $cols + 1] = array(
+            "rows" => $rows,
+            "cols" => $cols
+        );
+
+        return $seatmap;
+    }
+
+    public function reserveSeat($seatId, $userId) {
+        $result = array();
+        $result["success"] = false;
+
+        $this->startTransaction();
+
+        // Fetch the seat status
+        try {
+            $status = $this->getSeatForUpdate($seatId)->fetch_assoc()["status"];
+        } catch (Exception $e) {
+            $this->rollback();
+            $result["reason"] = "failure";
+            return $result;
+        }
+
+        // If it has not been purchased in the mean time
+        if ($status != "purchased") {
+            try {
+                $this->updateSeat($seatId, $userId, "reserved");
+            } catch (Exception $e) {
+                $this->rollback();
+                $result["reason"] = "failure";
+                return $result;
+            }
+            $result["success"] = true;
+        } else {
+            $result["reason"] = "purchased";
+        }
+
+        $this->endTransaction();
+
+        return $result;
+    }
+
+    public function freeSeat($seatId) {
+        $result = array();
+        $result["success"] = false;
+
+        $this->startTransaction();
+
+        try {
+            $status = $this->getSeatForUpdate($seatId)->fetch_assoc()["status"];
+        } catch (Exception $e) {
+            $this->rollback();
+            $result["reason"] = "failure";
+            return $result;
+        }
+
+        if ($status != "purchased") {
+            try {
+                $this->updateSeat($seatId, NULL, "free");
+            } catch (Exception $e) {
+                $this->rollback();
+                $result["reason"] = "failure";
+                return $result;
+            }
+            $result["success"] = true;
+        } else {
+            $result["reason"] = "purchased";
+        }
+
+        $this->endTransaction();
+
+        return $result;
     }
 
     private function validate($email, $pwd) {
@@ -167,6 +268,46 @@ class DatabaseHelper {
             throw new Exception("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
         }
         $stmt->close();
+        return;
+    }
+
+    private function getSeatMap() {
+        if (!($stmt = $this->_connection->prepare("SELECT * FROM seatmap ORDER BY row, col;"))) {
+            throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
+        }
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        $seatmap = $stmt->get_result();
+        $stmt->close();
+        return $seatmap;
+    }
+
+    private function getSeatForUpdate($seatId) {
+        if (!($stmt = $this->_connection->prepare("SELECT * FROM seatmap WHERE seatId=? FOR UPDATE;"))) {
+            throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
+        }
+        if (!$stmt->bind_param("i", $seatId)) {
+            throw new Exception("Prepare failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        $seat = $stmt->get_result();
+        $stmt->close();
+        return $seat;
+    }
+
+    private function updateSeat($seatId, $userId, $status) {
+        if (!($stmt = $this->_connection->prepare("UPDATE seatmap SET status=?, userId=? WHERE seatId=?;"))) {
+            throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
+        }
+        if (!$stmt->bind_param("sii", $status, $userId, $seatId)) {
+            throw new Exception("Prepare failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
         return;
     }
 }
