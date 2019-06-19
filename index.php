@@ -37,18 +37,22 @@
     <script type="text/javascript" src="/js/MVC/Seatmap.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $.post("/php/ajax/getSeatMap.php", function(json) {
-                var model = new SeatmapModel(json,
-                    <?php
-                        if (isset($_SESSION['userId'])) {
-                            echo "true";
-                        } else {
-                            echo "false";
-                        }
-                    ?>
-                );
-                var view = new SeatmapView(model, $(".main-container"), $($(".places p")[0]).children("span"), $($(".places p")[1]).children("span"), $($(".places p")[2]).children("span"));
-                var controller = new SeatmapController(model, view);
+            $.post("/php/ajax/getSeatmap.php", function(json) {
+                if (json.success) {
+                    var model = new SeatmapModel(json.seatmap,
+                        <?php
+                            if (isset($_SESSION['userId'])) {
+                                echo "true";
+                            } else {
+                                echo "false";
+                            }
+                        ?>
+                    );
+                    var view = new SeatmapView(model, $(".main-container"), $($(".places p")[0]).children("span"), $($(".places p")[1]).children("span"), $($(".places p")[2]).children("span"));
+                    var controller = new SeatmapController(model, view);
+                } else {
+                    //TODO ERROR AND TOAST NOTIFICATION
+                }
             }, "JSON");
         });
     </script>

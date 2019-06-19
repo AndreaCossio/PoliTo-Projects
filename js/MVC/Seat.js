@@ -2,6 +2,8 @@ function SeatModel(seat, logged) {
     this.seat = seat;
     this.logged = logged;
 
+    // Updates the seat. This update will change also the parent model's json
+    // because the seat is referenced.
     SeatModel.prototype.update = function(mine, status) {
         this.seat.mine = mine;
         this.seat.status = status;
@@ -12,7 +14,9 @@ function SeatView(model, parent) {
     this.model = model;
     this.parent = parent;
 
-    SeatView.prototype.render = function() {
+    // Creates seat div and span and set classes and cursor
+    // Then appends them to the parent
+    SeatView.prototype.init = function() {
         // Create span and div
         this.span = document.createElement("span");
         this.div = document.createElement("div");
@@ -28,6 +32,8 @@ function SeatView(model, parent) {
         $(this.parent).append(this.div);
     }
 
+    // Updates the seat background and cursor
+    // according to the model
     SeatView.prototype.update = function() {
         // Update classes
         switch (this.model.seat.status) {
@@ -58,22 +64,26 @@ function SeatView(model, parent) {
         }
     }
 
+    // Set the click listener of the div
     SeatView.prototype.addClick = function(listener) {
         $(this.div).off("click");
         $(this.div).click(listener);
     }
 
+    // Remove the click listener of the div
     SeatView.prototype.removeClick = function() {
         $(this.div).off("click");
     }
 
-    this.render();
+    this.init();
 }
 
 function SeatController(model, view, parentController) {
     this.model = model;
     this.view = view;
+    this.parentController = parentController;
 
+    // Defines the click handler for the seat according to the model
     SeatController.prototype.init = function() {
         var _this = this;
         if (this.model.logged && this.model.seat.status != "purchased") {
@@ -91,42 +101,48 @@ function SeatController(model, view, parentController) {
         }
     }
 
+    // Updates the model and the view of the seat and resets the click handler
+    // Notifies also the parent controller to update the parent model and view
     SeatController.prototype.update = function(mine, status, oldStatus) {
         this.model.update(mine, status);
         this.view.update();
         this.init();
-        parentController.updateSeat(this.model.seat.seatId, oldStatus);
+        this.parentController.updateSeat(this.model.seat.seatId, oldStatus);
     }
 
+    // Handler for a reserve click
     SeatController.prototype.reserve = function() {
         var _this = this;
-        var oldStatus = this.model.seat.status;
         $.post("/php/ajax/reserveSeat.php", {seatId: this.model.seat.seatId}, function(json) {
+            var old = _this.model.seat.status;
             if (json.success) {
-                _this.update(true, "reserved", oldStatus);
-            } else if (!json.success){
+                _this.update(true, "reserved", old);
+            } else if (json.reason != "failure") {
                 if (json.reason == "expired") {
                     window.location.href = "../../login.php?error=expired";
                 } else {
-                    _this.update(false, "purchased");
+                    _this.update(false, "purchased", old);
                 }
             }
+            //TODO ERROR AND TOAST NOTIFICATION
         }, "JSON");
     }
 
+    // Handler for a free click
     SeatController.prototype.free = function() {
         var _this = this;
-        var oldStatus = this.model.seat.status;
         $.post("/php/ajax/freeSeat.php", {seatId: this.model.seat.seatId}, function(json) {
+            var old = _this.model.seat.status;
             if (json.success) {
-                _this.update(false, "free", oldStatus);
-            } else if (!json.success){
-                if (json.reason == "expired", oldStatus) {
+                _this.update(false, "free", old);
+            } else if (json.reason != "failure") {
+                if (json.reason == "expired") {
                     window.location.href = "../../login.php?error=expired";
                 } else {
-                    _this.update(false, "purchased", oldStatus);
+                    _this.update(false, "purchased", old);
                 }
             }
+            //TODO ERROR AND TOAST NOTIFICATION
         }, "JSON");
     }
 

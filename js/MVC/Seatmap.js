@@ -1,17 +1,18 @@
 function SeatmapModel(json, logged) {
+    this.json = json;
     this.logged = logged;
 
-    SeatmapModel.prototype.init = function(json) {
+    // Initializes variables and creates the seatmodels.
+    SeatmapModel.prototype.init = function() {
         var len = Object.keys(json).length;
-        this.json = json;
         this.rows = json[len].rows;
         this.cols = json[len].cols;
         this.free = 0;
         this.reserved = 0;
         this.purchased = 0;
         this.selected = [];
-        this.seatModels = new Array(this.rows);
 
+        this.seatModels = new Array(this.rows);
         for (var i=0; i<this.rows; i++) {
             this.seatModels[i] = new Array(this.cols);
             for (var j=0; j<this.cols; j++) {
@@ -25,7 +26,9 @@ function SeatmapModel(json, logged) {
         }
     }
 
-    SeatmapModel.prototype.update = function(json) {
+    // Updates all the variables (this is used with the update button)
+    // The json is overridden and each seat reference of the json is reassigned to the seatmodel
+    SeatmapModel.prototype.updateAll = function(json) {
         var len = Object.keys(json).length;
         this.json = json;
         this.rows = json[len].rows;
@@ -34,6 +37,7 @@ function SeatmapModel(json, logged) {
         this.reserved = 0;
         this.purchased = 0;
         this.selected = [];
+
         for (var i=0; i<this.rows; i++) {
             for (var j=0; j<this.cols; j++) {
                 var seat = this.json[i*this.cols + j + 1];
@@ -46,8 +50,10 @@ function SeatmapModel(json, logged) {
         }
     }
 
+    // Updates the number of seat for each type according to the new status of the seat
+    // This also manages the current reserved seats by the user
+    // (This is sed when a single seat is clicked)
     SeatmapModel.prototype.updateSeat = function(seatId, oldStatus) {
-        console.log(seatId);
         switch (this.json[seatId].status) {
             case "free":
                 // The user has free it
@@ -77,6 +83,9 @@ function SeatmapModel(json, logged) {
         }
     }
 
+    // Updates the count of each seat type accordingly to the seat passed
+    // If the seat belongs to the user, the seat is added to the ones selected for purchase
+    // (This is used on model updates, not the ones of the seat)
     SeatmapModel.prototype.updateCount = function(seat) {
         switch (seat.status) {
             case "free":
@@ -96,6 +105,7 @@ function SeatmapModel(json, logged) {
         }
     }
 
+    // Adds the seatId to the selected seats for purchase
     SeatmapModel.prototype.selectSeat = function(seatId) {
         var index = this.selected.indexOf(seatId);
         if (index < 0) {
@@ -103,6 +113,7 @@ function SeatmapModel(json, logged) {
         }
     }
 
+    // Removes the seatId from the selected seats for purchase
     SeatmapModel.prototype.unselectSeat = function(seatId) {
         var index = this.selected.indexOf(seatId);
         if (index >= 0) {
@@ -110,7 +121,7 @@ function SeatmapModel(json, logged) {
         }
     }
 
-    this.init(json);
+    this.init();
 }
 
 function SeatmapView(model, parent, freeP, resP, purP) {
@@ -120,7 +131,11 @@ function SeatmapView(model, parent, freeP, resP, purP) {
     this.resP = resP;
     this.purP = purP;
 
-    SeatmapView.prototype.render = function() {
+    // Creates the buttons div and the two buttons if the user is logged
+    // Creates the seatmap container
+    // Creates rows div and seatViews
+    // Updates the three paragraphs that hold the count of seat for each type
+    SeatmapView.prototype.init = function() {
         // Create buttons
         if (this.model.logged) {
             var buttons = document.createElement("div");
@@ -160,7 +175,9 @@ function SeatmapView(model, parent, freeP, resP, purP) {
         this.updateNumbers();
     }
 
-    SeatmapView.prototype.update = function() {
+    // Updates each seat view (is called after a seat model update) and the three paragraphs
+    // (This is used with the update button)
+    SeatmapView.prototype.updateAll = function() {
         for (var i=0; i<this.model.rows; i++) {
             for (var j=0; j<this.model.cols; j++) {
                 this.seatViews[i][j].update();
@@ -171,33 +188,39 @@ function SeatmapView(model, parent, freeP, resP, purP) {
         this.updateNumbers();
     }
 
+    // Updates the three paragraphs according to the model
     SeatmapView.prototype.updateNumbers = function() {
         this.freeP.text(this.model.free);
         this.resP.text(this.model.reserved);
         this.purP.text(this.model.purchased);
     }
 
+    // Set the click listener of the update button
     SeatmapView.prototype.addUpdateClick = function(listener) {
         $(this.updateBtn).off("click");
         $(this.updateBtn).click(listener);
     }
 
+    // Set the click listener of the purchase button
     SeatmapView.prototype.addPurchaseClick = function(listener) {
         $(this.purchaseBtn).off("click");
         $(this.purchaseBtn).click(listener);
     }
 
+    // Removes the click listener of the update button
+    // (This is used when the are no seats selected for purchase)
     SeatmapView.prototype.removePurchaseClick = function() {
         $(this.purchaseBtn).off("click");
     }
 
-    this.render();
+    this.init();
 }
 
 function SeatmapController(model, view) {
     this.model = model;
     this.view = view;
 
+    // Defines the click handlers for the buttons and creates the seat controllers
     SeatmapController.prototype.init = function() {
         var _this = this;
         this.seatControllers = new Array(this.model.rows);
@@ -217,35 +240,60 @@ function SeatmapController(model, view) {
         }
     }
 
-    SeatmapController.prototype.update = function() {
+    // Updates the model, the view and reinitializes all the seats controllers
+    SeatmapController.prototype.updateAll = function(json) {
         var _this = this;
-        $.post("/php/ajax/getSeatMap.php", function(json) {
-            _this.model.update(json);
-            _this.view.update();
-            for (var i=0; i<_this.model.rows; i++) {
-                for (var j=0; j<_this.model.cols; j++) {
-                    _this.seatControllers[i][j].init();
-                }
+        this.model.updateAll(json);
+        this.view.updateAll();
+        for (var i=0; i<_this.model.rows; i++) {
+            for (var j=0; j<_this.model.cols; j++) {
+                this.seatControllers[i][j].init();
             }
-            if (_this.model.selected.length > 0) {
-                _this.view.addPurchaseClick(function() {
-                    _this.purchase();
-                });
-            } else {
-                _this.view.removePurchaseClick();
-            }
-        }, "JSON");
-        console.log(this);
+        }
+        if (this.model.selected.length > 0) {
+            this.view.addPurchaseClick(function() {
+                _this.purchase();
+            });
+        } else {
+            this.view.removePurchaseClick();
+        }
     }
 
+    // Updates the model seat and the numbers of the view
+    // This is used when the seat has changed status (reserve or free click)
     SeatmapController.prototype.updateSeat = function(seatId, oldStatus) {
         this.model.updateSeat(seatId, oldStatus);
-        this.view.update();
-        console.log(this);
+        this.view.updateNumbers();
     }
 
+    // Handler of the update button
+    SeatmapController.prototype.update = function() {
+        var _this = this;
+        $.post("/php/ajax/getSeatmap.php", function(json) {
+            if (json.success) {
+                _this.updateAll(json.seatmap);
+            } else {
+                if (json.reason == "expired") {
+                    window.location.href = "../../login.php?error=expired";
+                }
+            }
+            //TODO ERROR AND TOAST NOTIFICATION
+        }, "JSON");
+    }
+
+    // Handler for the purchase button
     SeatmapController.prototype.purchase = function() {
-        console.log("purchase");
+        var _this = this;
+        $.post("/php/ajax/purchaseSeats.php", {selected: this.model.selected}, function(json) {
+            if (json.success) {
+                _this.updateAll(json);
+            } else {
+                if (json.reason == "expired") {
+                    window.location.href = "../../login.php?error=expired";
+                }
+            }
+            //TODO ERROR AND TOAST NOTIFICATION
+        }, "JSON")
     }
 
     this.init();

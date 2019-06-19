@@ -123,19 +123,23 @@ class DatabaseHelper {
 
         $rows = self::ROWS;
         $cols = self::COLS;
-        $seatmap = array();
+        $res = array();
+        $res["success"] = false;
 
         try {
             $result = $this->getSeatMap();
         } catch (Exception $e) {
-            die($e->getMessage());
+            $res["reason"] = "failure";
+            return $res;
         }
+        $res["success"] = true;
+        $res["seatmap"] = array();
 
         for ($i=0; $i<$rows; $i++) {
             for ($j=0; $j<$cols; $j++) {
                 $row = $result->fetch_assoc();
                 if ($logged) {
-                    $seatmap[$row['seatId']] = array(
+                    $res["seatmap"][$row['seatId']] = array(
                         "seatId" => $row['seatId'],
                         "row" => $row['row'],
                         "col" => $row['col'],
@@ -143,7 +147,7 @@ class DatabaseHelper {
                         "status" => $row['status']
                     );
                 } else {
-                    $seatmap[$row['seatId']] = array(
+                    $res["seatmap"][$row['seatId']] = array(
                         "seatId" => $row['seatId'],
                         "row" => $row['row'],
                         "col" => $row['col'],
@@ -152,12 +156,12 @@ class DatabaseHelper {
                 }
             }
         }
-        $seatmap[$rows * $cols + 1] = array(
+        $res["seatmap"][$rows * $cols + 1] = array(
             "rows" => $rows,
             "cols" => $cols
         );
 
-        return $seatmap;
+        return $res;
     }
 
     public function reserveSeat($seatId, $userId) {
@@ -224,6 +228,10 @@ class DatabaseHelper {
         $this->endTransaction();
 
         return $result;
+    }
+
+    public function purchaseSeats($selected) {
+        
     }
 
     private function validate($email, $pwd) {

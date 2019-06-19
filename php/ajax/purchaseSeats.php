@@ -8,13 +8,11 @@
         $result["success"] = false;
         $result["reason"] = "expired";
         echo json_encode($result);
-    } else {
-        if (isset($_SESSION['userId'])) {
-            $logged = true;
-        } else {
-            $logged = false;
-        }
-        $result = DatabaseHelper::getInstance()->fetchSeatMap($logged);
+    } elseif (isset($_POST['selected']) && isset($_SESSION['userId'])) {
+        $result = DatabaseHelper::getInstance()->purchaseSeats($_POST['seatId']);
         echo json_encode($result);
+    } else {
+        redirect("../../");
     }
+    
     exit();
