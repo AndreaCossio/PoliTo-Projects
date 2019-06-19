@@ -93,6 +93,7 @@ hr {
   align-items: center;
   position: fixed;
   top: 0;
+  z-index: 1;
 }
 
 .topheader h1 {
@@ -193,10 +194,51 @@ hr {
   display: none;
 }
 
+.title-container {
+  margin: 50px 100px 10px 100px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title-container .places {
+  float: left;
+}
+
+.title-container .places h1 {
+  font-size: 24px;
+  margin: 0px;
+}
+
+.title-container .places p {
+  margin: 0px;
+}
+
+.title-container .buttons {
+  float: right;
+}
+
+.title-container .buttons button {
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  font: 400 16px 'Roboto';
+  font-family: sans-serif;
+  background-color: #ff5722;
+  margin: 10px;
+}
+
+.title-container .buttons button:hover {
+  opacity:1;
+}
+
 .seatmap-container {
   background-color: #fafafa;
   width: 75%;
-  margin: 100px;
+  margin: 10px 100px 20px 100px;
   display: inline-block;
   padding: 20px;
 }
@@ -204,7 +246,7 @@ hr {
 .seat-row {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-around;
 }
 
 .seat {
@@ -237,7 +279,6 @@ hr {
   font-weight: bold;
   font-size: 16px;
   line-height: 1rem;
-  cursor: default;
 }
 
 @media (max-width: 720px) {
@@ -275,8 +316,13 @@ hr {
     width: 80%;
   }
 
+  .title-container {
+    margin: 20px 20px 5px 20px;
+    width: calc(100% - 40px);
+  }
+
   .seatmap-container {
-    margin: 20px;
+    margin: 5px 20px 20px 20px;
     width: calc(100% - 40px);
   }
 

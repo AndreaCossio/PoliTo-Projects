@@ -21,6 +21,14 @@
 
     <div class="main">
         <div class="main-container">
+            <div class="title-container">
+                <div class="places">
+                    <h1>Total places: <span>60</span></h1>
+                    <p>Free: <span>0</span></p>
+                    <p>Reserved: <span>0</span></p>
+                    <p>Purchased: <span>0</span></p>
+                </div>
+            </div>
         </div>
         <?php require_once "php/fragments/js-cookies.php"?>
     </div>
@@ -33,13 +41,14 @@
                 var model = new SeatmapModel(json,
                     <?php
                         if (isset($_SESSION['userId'])) {
-                            echo $_SESSION['userId'] . ", true";
+                            echo "true";
                         } else {
-                            echo -1 . ", false";
+                            echo "false";
                         }
                     ?>
                 );
-                var view = new SeatmapView(model, $(".main-container"));
+                var view = new SeatmapView(model, $(".main-container"), $($(".places p")[0]).children("span"), $($(".places p")[1]).children("span"), $($(".places p")[2]).children("span"));
+                var controller = new SeatmapController(model, view);
             }, "JSON");
         });
     </script>

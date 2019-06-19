@@ -119,7 +119,7 @@ class DatabaseHelper {
         return "";
     }
 
-    public function fetchSeatMap() {
+    public function fetchSeatMap($logged) {
 
         $rows = self::ROWS;
         $cols = self::COLS;
@@ -134,13 +134,22 @@ class DatabaseHelper {
         for ($i=0; $i<$rows; $i++) {
             for ($j=0; $j<$cols; $j++) {
                 $row = $result->fetch_assoc();
-                $seatmap[$row['seatId']] = array(
-                    "seatId" => $row['seatId'],
-                    "row" => $row['row'],
-                    "col" => $row['col'],
-                    "userId" => $row['userId'],
-                    "status" => $row['status']
-                );
+                if ($logged) {
+                    $seatmap[$row['seatId']] = array(
+                        "seatId" => $row['seatId'],
+                        "row" => $row['row'],
+                        "col" => $row['col'],
+                        "mine" => $row['userId'] == $_SESSION['userId'],
+                        "status" => $row['status']
+                    );
+                } else {
+                    $seatmap[$row['seatId']] = array(
+                        "seatId" => $row['seatId'],
+                        "row" => $row['row'],
+                        "col" => $row['col'],
+                        "status" => $row['status']
+                    );
+                }
             }
         }
         $seatmap[$rows * $cols + 1] = array(
