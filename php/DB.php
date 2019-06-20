@@ -231,7 +231,44 @@ class DatabaseHelper {
     }
 
     public function purchaseSeats($selected) {
+        $result = array();
+        $result["success"] = false;
+        $canpurchase = true;
+
+        $this->startTransaction();
+
+        foreach ($selected as $key => $seatId) {
+            $seatId = (int)$seatId;
+            try {
+                $seat = $this->getSeatForUpdate($seatId)->fetch_assoc();
+                // If not mine or has been purchased in the meantime remove it from the selected and block purchase
+                if ($seat["status"] != "free" && ($seat["userId"] != $_SESSION["userId"] || $seat["status"] == "purchased")) {
+                    $result["reason"] = "changed-state";
+                    $canpurchase = false;
+                    unset($selected[$key]);
+                }
+            } catch (Exception $e) {
+                $this->rollback();
+                $result["reason"] = "failure";
+                return $result;
+            }
+        }
+
+        foreach ($selected as $key => $seatId) {
+            $seatId = (int)$seatId;
+            try {
+                $this->updateSeat($seatId, $_SESSION["userId"], ($canpurchase) ? "purchased" : "free");
+            } catch (Exception $e) {
+                $this->rollback();
+                $result["reason"] = "failure";
+                return $result;
+            }
+        }
+
+        $this->endTransaction();
         
+        $result = $this->fetchSeatMap(true);
+        return $result;
     }
 
     private function validate($email, $pwd) {

@@ -9,7 +9,7 @@
         $result["reason"] = "expired";
         echo json_encode($result);
     } elseif (isset($_POST['selected']) && isset($_SESSION['userId'])) {
-        $result = DatabaseHelper::getInstance()->purchaseSeats($_POST['seatId']);
+        $result = DatabaseHelper::getInstance()->purchaseSeats($_POST['selected']);
         echo json_encode($result);
     } else {
         redirect("../../");

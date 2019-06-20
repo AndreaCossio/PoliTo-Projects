@@ -259,11 +259,51 @@ function SeatmapController(model, view) {
         }
     }
 
+    // Shows a success toast with the given message
+    SeatmapController.prototype.showToastSuccess = function(message) {
+        var toast = $(".toast-success");
+        var container = $("#toast-success");
+
+        $("#toast-error").css("display", "none");
+        container.css("display", "none");
+
+        toast.children(".toast-content").children(".toast-text").text(message);
+        toast.children(".toast-close").off("click").on("click", function(e) {
+            e.preventDefault();
+            container.css("display", "none");
+        })
+        container.show(300);
+    }
+
+    // Shows an error toast with the given message
+    SeatmapController.prototype.showToastError = function(message) {
+        var toast = $(".toast-error");
+        var container = $("#toast-error");
+
+        $("#toast-success").css("display", "none");
+        container.css("display", "none");
+
+        toast.children(".toast-content").children(".toast-text").text(message);
+        toast.children(".toast-close").off("click").on("click", function(e) {
+            e.preventDefault();
+            container.css("display", "none");
+        })
+        container.show(300);
+    }
+
     // Updates the model seat and the numbers of the view
     // This is used when the seat has changed status (reserve or free click)
     SeatmapController.prototype.updateSeat = function(seatId, oldStatus) {
+        var _this = this;
         this.model.updateSeat(seatId, oldStatus);
         this.view.updateNumbers();
+        if (this.model.selected.length > 0) {
+            this.view.addPurchaseClick(function() {
+                _this.purchase();
+            });
+        } else {
+            this.view.removePurchaseClick();
+        }
     }
 
     // Handler of the update button
@@ -272,12 +312,14 @@ function SeatmapController(model, view) {
         $.post("/php/ajax/getSeatmap.php", function(json) {
             if (json.success) {
                 _this.updateAll(json.seatmap);
+                _this.showToastSuccess("The seatmap was correclty updated!");
             } else {
                 if (json.reason == "expired") {
                     window.location.href = "../../login.php?error=expired";
+                } else {
+                    _this.showToastError(json.reason);
                 }
             }
-            //TODO ERROR AND TOAST NOTIFICATION
         }, "JSON");
     }
 
@@ -286,13 +328,15 @@ function SeatmapController(model, view) {
         var _this = this;
         $.post("/php/ajax/purchaseSeats.php", {selected: this.model.selected}, function(json) {
             if (json.success) {
-                _this.updateAll(json);
+                _this.updateAll(json.seatmap);
+                _this.showToastSuccess("The seatmap was correclty updated!");
             } else {
                 if (json.reason == "expired") {
                     window.location.href = "../../login.php?error=expired";
+                } else {
+                    _this.showToastError(json.reason);
                 }
             }
-            //TODO ERROR AND TOAST NOTIFICATION
         }, "JSON")
     }
 

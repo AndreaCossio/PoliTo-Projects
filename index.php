@@ -33,6 +33,31 @@
         <?php require_once "php/fragments/js-cookies.php"?>
     </div>
 
+    <?php if (isset($_SESSION) && isset($_SESSION["userId"])) {?>
+        <div id="toast-success" class="toast-container">
+            <div class="toast toast-success">
+                <div class="toast-content">
+                    <p class="toast-title">Success</p>
+                    <p class="toast-text"></p>
+                </div>
+                <div class="toast-close">
+                    &#10006;
+                </div>
+            </div>
+        </div>
+        <div id="toast-error" class="toast-container">
+            <div class="toast toast-error">
+                <div class="toast-content">
+                    <p class="toast-title">Success</p>
+                    <p class="toast-text"></p>
+                </div>
+                <div class="toast-close">
+                    &#10006;
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+
     <script type="text/javascript" src="/js/MVC/Seat.js"></script>
     <script type="text/javascript" src="/js/MVC/Seatmap.js"></script>
     <script type="text/javascript">

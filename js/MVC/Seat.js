@@ -117,11 +117,13 @@ function SeatController(model, view, parentController) {
             var old = _this.model.seat.status;
             if (json.success) {
                 _this.update(true, "reserved", old);
+                _this.parentController.showToastSuccess("The seat has been correctly reserved.");
             } else if (json.reason != "failure") {
                 if (json.reason == "expired") {
                     window.location.href = "../../login.php?error=expired";
                 } else {
                     _this.update(false, "purchased", old);
+                    _this.parentController.showToastError("Sorry, the seat was reserved in the mean time.");
                 }
             }
             //TODO ERROR AND TOAST NOTIFICATION
@@ -135,11 +137,13 @@ function SeatController(model, view, parentController) {
             var old = _this.model.seat.status;
             if (json.success) {
                 _this.update(false, "free", old);
+                _this.parentController.showToastSuccess("The seat has been correctly freed.");
             } else if (json.reason != "failure") {
                 if (json.reason == "expired") {
                     window.location.href = "../../login.php?error=expired";
                 } else {
                     _this.update(false, "purchased", old);
+                    _this.parentController.showToastError("Sorry, the seat was reserved in the mean time.");
                 }
             }
             //TODO ERROR AND TOAST NOTIFICATION

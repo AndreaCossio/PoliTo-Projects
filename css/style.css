@@ -222,6 +222,7 @@ hr {
 .title-container .buttons button {
   color: white;
   padding: 14px 20px;
+  width: 110px;
   border: none;
   cursor: pointer;
   opacity: 0.9;
@@ -281,6 +282,68 @@ hr {
   line-height: 1rem;
 }
 
+.toast-container {
+  bottom: 10px;
+  right: 10px;
+  width: 500px;
+  position: fixed;
+  display: none;
+}
+
+.toast {
+  text-align: left;
+  padding: 21px 0;
+  background-color: #fafafa;
+  border-radius:4px;
+  box-shadow: 1px 7px 14px -5px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+}
+
+.toast:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  border-top-left-radius:4px;
+  border-bottom-left-radius: 4px;
+}
+
+.toast-success:before{
+  background-color:#4caf50;
+}
+
+.toast-error:before{
+  background-color:#f44336;
+}
+
+.toast-title {
+  color: #212121;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.toast-text {
+  font-size: 14px;
+  margin-top: 0;
+  margin-bottom: 0;
+  color: #424242;
+}
+
+.toast-content{
+  padding-left: 70px;
+  padding-right: 60px;
+}
+
+.toast-close {
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
 @media (max-width: 720px) {
   .nav-container {
     width: 0px;
@@ -321,6 +384,10 @@ hr {
     width: calc(100% - 40px);
   }
 
+  .title-container .buttons {
+    max-width: 130px;
+  }
+
   .seatmap-container {
     margin: 5px 20px 20px 20px;
     width: calc(100% - 40px);
@@ -334,5 +401,11 @@ hr {
 
   .seat span {
     font-size: 14px;
+  }
+
+  .toast-container {
+    right: 1px;
+    bottom: 1px;
+    width: calc(100% - 2px);
   }
 }

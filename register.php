@@ -53,7 +53,7 @@
                     <div class="input-container">
                         <label for="register-pwd"><b>Password</b></label>
                         <span>The password must contain at least 1 lowercase character and 1 uppercase character or number.</span>
-                        <input type="password" name="register-pwd" id="register-pwd" placeholder="Password" pattern="^(?=.*[a-z])(?=.*([A-Z]|[0-9])).*$" title="The password must contain at least 1 lowercase character and 1 uppercase character or number." tabindex="2" required>
+                        <input type="password" name="register-pwd" id="register-pwd" placeholder="Password" pattern="^(?=.*[a-z])(?=.*([A-Z0-9])).*$" title="The password must contain at least 1 lowercase character and 1 uppercase character or number." tabindex="2" required>
                     </div>
                     <div class="submit-container">
                         <button type="submit" name="register-submit" class="submitbtn" tabindex="3">Register</button>
