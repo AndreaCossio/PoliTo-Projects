@@ -10,8 +10,6 @@
     // Perform login if coming from the form
     if (isset($_POST['login-submit'])) {
         $error = DatabaseHelper::getInstance()->loginUser($_POST['login-email'], $_POST['login-pwd']);
-        if (empty($error))
-            redirect("./");
     }
 
     // Redirect to homepage

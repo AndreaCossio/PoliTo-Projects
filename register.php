@@ -10,8 +10,6 @@
     // Perform registration if coming from the form
     if (isset($_POST['register-submit'])) {
         $error = DatabaseHelper::getInstance()->registerUser($_POST['register-email'], $_POST['register-pwd']);
-        if (empty($error))
-            redirect("./");
     }
 
     // Redirect if the user was logged
