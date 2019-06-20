@@ -10,6 +10,7 @@ class DatabaseHelper {
     private $_connection;
     private static $_instance = null;
 
+    // Creates a new connection
     private function __construct() {
         require_once "Config/db_config.php";
         $this->_connection = new mysqli($default_host, $default_user, $default_pw, $default_db);
@@ -18,10 +19,12 @@ class DatabaseHelper {
         }
     }
 
+    // Closes the connection
     private function __desctruct() {
         $this->_connection->close();
     }
 
+    // Returns the singleton instance
     public static function getInstance() {
         if (!self::$_instance) {
             self::$_instance = new self();
@@ -29,60 +32,62 @@ class DatabaseHelper {
         return self::$_instance;
     }
 
+    // Starts a transaction
     private function startTransaction() {
         $this->_connection->begin_transaction();
     }
 
+    // Commits the transaction
     private function endTransaction() {
         $this->_connection->commit();
     }
 
+    // Rollbacks the transaction
     private function rollback() {
         $this->_connection->rollback();
     }
 
+    // Logs in the user
     public function loginUser($email, $pwd) {
-        // Validation
-        try {
-            $this->validate($email, $pwd);
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
+        $result = array();
+        $result["success"] = false;
 
         // Check if the user exists
         try {
             $user = $this->getUser($email);
         } catch (Exception $e) {
-            die($e->getMessage());
+            $result["reason"] = "Database failure";
+            return $result;
         }
         if ($user->num_rows === 0) {
             // Privacy message: don't tell that the email is not in the database.
-            return "Incorrect password or email.";
+            $result["reason"] = "Incorrect password or email.";
+            return $result;
         }
 
         // Fetch user data
         $user_data = $user->fetch_assoc();
 
         // Verify password
-        if (password_verify($pwd, $user_data['password'])) {
-            setSession($user_data['userId'], $user_data['email']);
-            return "";
-        } else {
-            return "Incorrect password or email.";
+        if (!password_verify($pwd, $user_data['password'])) {
+            $result["reason"] = "Incorrect password or email.";
+            return $result;
         }
+        setSession($user_data['userId'], $user_data['email']);
+        return $result;
     }
 
+    // Register the user if it does not already exist
     public function registerUser($email, $pwd) {
+        $result = array();
+        $result["success"] = false;
+
         // Validation
         try {
             $this->validate($email, $pwd);
         } catch (Exception $e) {
-            return $e->getMessage();
-        }
-
-        // Validate pw regex even if it's already validated in the form
-        if (!preg_match('/^(?=.*[a-z])(?=.*([A-Z]|[0-9])).*$/', $pwd)) {
-            throw new Exception("The password must contain at least one number and one character");
+            $result["reason"] = $e->getMessage();
+            return $result;
         }
 
         // Check if user already exists
@@ -91,11 +96,13 @@ class DatabaseHelper {
             $user = $this->getUserForUpdate($email);
         } catch (Exception $e) {
             $this->rollback();
-            die($e->getMessage());
+            $result["reason"] = "Database failure";
+            return $result;
         }
         if ($user->num_rows > 0) {
             $this->rollback();
-            return "The user already exists.";
+            $result["reason"] = "The user already exists.";
+            return $result;
         }
 
         // Otherwise create it
@@ -103,7 +110,8 @@ class DatabaseHelper {
             $this->createUser($email, $pwd);
         } catch (Exception $e) {
             $this->rollback();
-            die($e->getMessage());
+            $result["reason"] = "Database failure";
+            return $result;
         }
         $this->endTransaction();
         
@@ -111,170 +119,26 @@ class DatabaseHelper {
         try {
             $user_data = $this->getUser($email)->fetch_assoc();
         } catch (Exception $e) {
-            die($e->getMessage());
+            $result["reason"] = "Database failure";
+            return $result;
         }
         setSession($user_data['userId'], $user_data['email']);
-        return "";
-    }
-
-    public function fetchSeatMap($logged) {
-
-        $rows = self::ROWS;
-        $cols = self::COLS;
-        $res = array();
-        $res["success"] = false;
-
-        try {
-            $result = $this->getSeatMap();
-        } catch (Exception $e) {
-            $res["reason"] = "failure";
-            return $res;
-        }
-        $res["success"] = true;
-        $res["seatmap"] = array();
-
-        for ($i=0; $i<$rows; $i++) {
-            for ($j=0; $j<$cols; $j++) {
-                $row = $result->fetch_assoc();
-                if ($logged) {
-                    $res["seatmap"][$row['seatId']] = array(
-                        "seatId" => $row['seatId'],
-                        "row" => $row['row'],
-                        "col" => $row['col'],
-                        "mine" => $row['userId'] == $_SESSION['userId'],
-                        "status" => $row['status']
-                    );
-                } else {
-                    $res["seatmap"][$row['seatId']] = array(
-                        "seatId" => $row['seatId'],
-                        "row" => $row['row'],
-                        "col" => $row['col'],
-                        "status" => $row['status']
-                    );
-                }
-            }
-        }
-        $res["seatmap"][$rows * $cols + 1] = array(
-            "rows" => $rows,
-            "cols" => $cols
-        );
-
-        return $res;
-    }
-
-    public function reserveSeat($seatId, $userId) {
-        $result = array();
-        $result["success"] = false;
-
-        $this->startTransaction();
-
-        // Fetch the seat status
-        try {
-            $status = $this->getSeatForUpdate($seatId)->fetch_assoc()["status"];
-        } catch (Exception $e) {
-            $this->rollback();
-            $result["reason"] = "failure";
-            return $result;
-        }
-
-        // If it has not been purchased in the mean time
-        if ($status != "purchased") {
-            try {
-                $this->updateSeat($seatId, $userId, "reserved");
-            } catch (Exception $e) {
-                $this->rollback();
-                $result["reason"] = "failure";
-                return $result;
-            }
-            $result["success"] = true;
-        } else {
-            $result["reason"] = "purchased";
-        }
-
-        $this->endTransaction();
-
         return $result;
     }
 
-    public function freeSeat($seatId) {
-        $result = array();
-        $result["success"] = false;
-
-        $this->startTransaction();
-
-        try {
-            $status = $this->getSeatForUpdate($seatId)->fetch_assoc()["status"];
-        } catch (Exception $e) {
-            $this->rollback();
-            $result["reason"] = "failure";
-            return $result;
-        }
-
-        if ($status != "purchased") {
-            try {
-                $this->updateSeat($seatId, NULL, "free");
-            } catch (Exception $e) {
-                $this->rollback();
-                $result["reason"] = "failure";
-                return $result;
-            }
-            $result["success"] = true;
-        } else {
-            $result["reason"] = "purchased";
-        }
-
-        $this->endTransaction();
-
-        return $result;
-    }
-
-    public function purchaseSeats($selected) {
-        $result = array();
-        $result["success"] = false;
-        $canpurchase = true;
-
-        $this->startTransaction();
-
-        foreach ($selected as $key => $seatId) {
-            $seatId = (int)$seatId;
-            try {
-                $seat = $this->getSeatForUpdate($seatId)->fetch_assoc();
-                // If not mine or has been purchased in the meantime remove it from the selected and block purchase
-                if ($seat["status"] != "free" && ($seat["userId"] != $_SESSION["userId"] || $seat["status"] == "purchased")) {
-                    $result["reason"] = "changed-state";
-                    $canpurchase = false;
-                    unset($selected[$key]);
-                }
-            } catch (Exception $e) {
-                $this->rollback();
-                $result["reason"] = "failure";
-                return $result;
-            }
-        }
-
-        foreach ($selected as $key => $seatId) {
-            $seatId = (int)$seatId;
-            try {
-                $this->updateSeat($seatId, $_SESSION["userId"], ($canpurchase) ? "purchased" : "free");
-            } catch (Exception $e) {
-                $this->rollback();
-                $result["reason"] = "failure";
-                return $result;
-            }
-        }
-
-        $this->endTransaction();
-        
-        $result = $this->fetchSeatMap(true);
-        return $result;
-    }
-
+    // Validates the email and checks that the fields are not empty
     private function validate($email, $pwd) {
+        // Check empty
         if ($email == "" || $pwd == "") {
             throw new Exception("The email and the password cannot be empty.");
         }
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        // Validate email
+        if (!preg_match("/^[a-zA-Z0-9\.\!\#\$\%\&\'\*\+\/\=\?\^\_\`\{\|\}\~\-]+@[a-zA-z0-9\-]+\.[a-zA-z0-9]+$/", $email)) {
             throw new Exception("The email is not valid.");
+        }
+        // Validate pw regex even if it's already validated in the form
+        if (!preg_match('/^(?=.*[a-z])(?=.*([A-Z]|[0-9])).*$/', $pwd)) {
+            throw new Exception("The password must contain at least one number and one character");
         }
     }
 
@@ -323,8 +187,222 @@ class DatabaseHelper {
         return;
     }
 
+    // Returns the seatmap in an associative array
+    public function fetchSeatMap($logged) {
+        $rows = self::ROWS;
+        $cols = self::COLS;
+        $result = array();
+        $result["success"] = false;
+
+        try {
+            $seatmap = $this->getSeatMap();
+        } catch (Exception $e) {
+            $result["reason"] = "Database failure";
+            return $result;
+        }
+
+        $result["success"] = true;
+        $result["data"] = array();
+
+        // Init empty
+        for ($i=0; $i<$rows; $i++) {
+            for ($j=0; $j<$cols; $j++) {
+                $seatId = chr(ord("A") + $j) . ($i + 1);
+                if ($logged) {
+                    $result["data"][$seatId] = array(
+                        "seatId" => $seatId,
+                        "mine" => false,
+                        "status" => "free"
+                    );
+                } else {
+                    $result["data"][$seatId] = array(
+                        "seatId" => $seatId,
+                        "status" => "free"
+                    );
+                }
+            }
+        }
+        
+        while ($row = $seatmap->fetch_assoc()) {
+            $result["data"][$row["seatId"]]["status"] = $row["status"];
+            if ($logged) {
+                $result["data"][$row["seatId"]]["mine"] = $row["userId"] == $_SESSION["userId"];
+            }
+        }
+
+        $result["size"] = array(
+            "rows" => $rows,
+            "cols" => $cols
+        );
+
+        return $result;
+    }
+
+    // Reserve the seat for the user if it is not been purchased
+    public function reserveSeat($seatId, $userId) {
+        $result = array();
+        $result["success"] = false;
+
+        $this->startTransaction();
+
+        // Fetch the seat status
+        try {
+            $query = $this->getSeatForUpdate($seatId);
+        } catch (Exception $e) {
+            $this->rollback();
+            $result["reason"] = "Database failure";
+            return $result;
+        }
+
+        // If it does not exist
+        if ($query->num_rows == 0) {
+            try {
+                $this->createSeat($seatId, $userId, "reserved");
+            } catch (Exception $e) {
+                $this->rollback();
+                $result["reason"] = "Database failure";
+                return $result;
+            }
+            $result["success"] = true;
+            $result["reason"] = "The seat has been correctly reserved.";
+        } else {
+            // If it is not been purchased in the mean time
+            if (($status = $query->fetch_assoc()["status"]) != "purchased") {
+                try {
+                    $this->updateSeat($seatId, $userId, "reserved");
+                } catch (Exception $e) {
+                    $this->rollback();
+                    $result["reason"] = "Database failure";
+                    return $result;
+                }
+                $result["success"] = true;
+                $result["reason"] = "The seat has been correctly reserved.";
+            } else {
+                $result["reason"] = "Sorry, the seat was purchased in the mean time.";
+            }
+        }
+
+        $this->endTransaction();
+
+        return $result;
+    }
+
+    // Frees a seat
+    public function freeSeat($seatId) {
+        $result = array();
+        $result["success"] = false;
+
+        $this->startTransaction();
+
+        // Fetch the seat status
+        try {
+            $query = $this->getSeatForUpdate($seatId);
+        } catch (Exception $e) {
+            $this->rollback();
+            $result["reason"] = "Database failure";
+            return $result;
+        }
+
+        // If it does not exist
+        if ($query->num_rows == 0) {
+            $result["success"] = true;
+            $result["reason"] = "The seat has been correctly freed.";
+        } else {
+            // If it is not been purchased in the mean time
+            if (($status = $query->fetch_assoc()["status"]) != "purchased") {
+                try {
+                    $this->deleteSeat($seatId);
+                } catch (Exception $e) {
+                    $this->rollback();
+                    $result["reason"] = "Database failure";
+                    return $result;
+                }
+                $result["success"] = true;
+                $result["reason"] = "The seat has been correctly freed.";
+            } else {
+                $result["reason"] = "Sorry, the seat was purchased in the mean time.";
+            }
+        }
+
+        $this->endTransaction();
+
+        return $result;
+    }
+
+    // Purchases the selected seats
+    public function purchaseSeats($selected) {
+        $result = array();
+        $result["success"] = false;
+        $canpurchase = true;
+        $action = array();
+
+        $this->startTransaction();
+
+        foreach ($selected as $seatId) {
+            // Fetch the seat status
+            try {
+                $query = $this->getSeatForUpdate($seatId);
+            } catch (Exception $e) {
+                $this->rollback();
+                $result["reason"] = "Database failure";
+                return $result;
+            }
+
+            // If it does not exist
+            if ($query->num_rows == 0) {
+                $action[$seatId] = "insert";
+            } else {
+                $seat = $query->fetch_assoc();
+                // If not mine or has been purchased in the meantime, remove it from the selected and block purchase
+                if ($seat["userId"] != $_SESSION["userId"] || $seat["status"] == "purchased") {
+                    $canpurchase = false;
+                } else {
+                    $action[$seat["seatId"]] = "update";
+                }
+            }
+        }
+
+        foreach ($action as $seatId => $op) {
+            try {
+                if ($canpurchase) {
+                    if ($op == "insert") {
+                        $this->createSeat($seatId, $_SESSION["userId"], "purchased");
+                    } else {
+                        $this->updateSeat($seatId, $_SESSION["userId"], "purchased");
+                    }
+                } else {
+                    if ($op == "update") {
+                        $this->deleteSeat($seatId);
+                    }
+                }
+            } catch (Exception $e) {
+                $this->rollback();
+                $result["reason"] = "Database failure";
+                return $result;
+            }
+        }
+
+        if ($canpurchase) {
+            $result["success"] = true;
+            $result["reason"] = "The seats have been correctly purchased.";
+        } else {
+            $result["reason"] = "Sorry, the purchase cannot be placed.";
+        }
+
+        $this->endTransaction();
+        
+        $newseatmap = $this->fetchSeatMap(true);
+        if ($newseatmap["success"]) {
+            $result["data"] = $newseatmap["data"];
+            $result["size"] = $newseatmap["size"];
+            return $result;
+        } else {
+            return $newseatmap;
+        }
+    }
+
     private function getSeatMap() {
-        if (!($stmt = $this->_connection->prepare("SELECT * FROM seatmap ORDER BY row, col;"))) {
+        if (!($stmt = $this->_connection->prepare("SELECT * FROM seatmap;"))) {
             throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
         }
         if (!$stmt->execute()) {
@@ -339,7 +417,7 @@ class DatabaseHelper {
         if (!($stmt = $this->_connection->prepare("SELECT * FROM seatmap WHERE seatId=? FOR UPDATE;"))) {
             throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
         }
-        if (!$stmt->bind_param("i", $seatId)) {
+        if (!$stmt->bind_param("s", $seatId)) {
             throw new Exception("Prepare failed: (" . $stmt->errno . ") " . $stmt->error);
         }
         if (!$stmt->execute()) {
@@ -354,7 +432,33 @@ class DatabaseHelper {
         if (!($stmt = $this->_connection->prepare("UPDATE seatmap SET status=?, userId=? WHERE seatId=?;"))) {
             throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
         }
-        if (!$stmt->bind_param("sii", $status, $userId, $seatId)) {
+        if (!$stmt->bind_param("sis", $status, $userId, $seatId)) {
+            throw new Exception("Prepare failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        return;
+    }
+
+    private function createSeat($seatId, $userId, $status) {
+        if (!($stmt = $this->_connection->prepare("INSERT INTO seatmap VALUES (?, ?, ?);"))) {
+            throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
+        }
+        if (!$stmt->bind_param("sis", $seatId, $userId, $status)) {
+            throw new Exception("Prepare failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        return;
+    }
+
+    private function deleteSeat($seatId) {
+        if (!($stmt = $this->_connection->prepare("DELETE FROM seatmap WHERE seatId=?;"))) {
+            throw new Exception("Prepare failed: (" . $this->_connection->errno . ") " . $this->_connection->error);
+        }
+        if (!$stmt->bind_param("s", $seatId)) {
             throw new Exception("Prepare failed: (" . $stmt->errno . ") " . $stmt->error);
         }
         if (!$stmt->execute()) {

@@ -8,7 +8,10 @@ function validate() {
     if (/^[a-zA-Z0-9\.\!\#\$\%\&\'\*\+\/\=\?\^\_\`\{\|\}\~\-]+@[a-zA-z0-9\-]+\.[a-zA-z0-9]+$/.test(email.val())) {
         return true;
     } else {
-        var span = document.createElement("span");
+        var span = $(".form-title span");
+        if (span.length == 0) {
+            span = document.createElement("span");
+        }
         $(span).text("The email is not valid.").insertAfter($(".form-title h1"));
         return false;
     }

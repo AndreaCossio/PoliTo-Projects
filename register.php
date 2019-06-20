@@ -39,8 +39,8 @@
                     <div class="form-title">
                         <h1>Register</h1>
                         <?php
-                            if (isset($error)) {
-                                echo "<span>$error</span>";
+                            if (isset($error) && !$error["success"] && $error["reason"] != "Database failure") {
+                                echo "<span>$error[reason]</span>";
                             }
                         ?>
                         <hr />

@@ -42,8 +42,8 @@
                         <?php
                             if (isset($_GET['error'])) {
                                 echo "<span>The session has expired, please re-authenticate.</span>";
-                            } elseif (isset($error)) {
-                                echo "<span>$error</span>";
+                            } elseif (isset($error) && !$error["success"] && $error["reason"] != "Database failure") {
+                                echo "<span>$error[reason]</span>";
                             }
                         ?>
                         <hr />

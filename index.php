@@ -69,11 +69,11 @@
 
     <script type="text/javascript" src="js/MVC/Seat.js"></script>
     <script type="text/javascript" src="js/MVC/Seatmap.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript"><!--
         $(document).ready(function() {
             $.post("php/ajax/getSeatmap.php", function(json) {
                 if (json["success"]) {
-                    var model = new SeatmapModel(json["seatmap"],
+                    var model = new SeatmapModel(json,
                         <?php
                             if (isset($_SESSION['userId'])) {
                                 echo "true";
@@ -89,7 +89,7 @@
                 }
             }, "JSON");
         });
-    </script>
+    //--></script>
 
 </body>
 </html>

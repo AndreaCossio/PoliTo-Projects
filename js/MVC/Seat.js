@@ -5,8 +5,8 @@ function SeatModel(seat, logged) {
     // Updates the seat. This update will change also the parent model's json
     // because the seat is referenced.
     SeatModel.prototype.update = function(mine, status) {
-        this.seat.mine = mine;
-        this.seat.status = status;
+        this.seat["mine"] = mine;
+        this.seat["status"] = status;
     }
 }
 
@@ -22,7 +22,7 @@ function SeatView(model, parent) {
         this.div = document.createElement("div");
         
         // Set seat text and append it
-        $(this.span).html(this.model.seat.row + this.model.seat.col);
+        $(this.span).html(this.model.seat["seatId"]);
         $(this.div).append(this.span);
 
         // Update classes and cursor style
@@ -36,12 +36,12 @@ function SeatView(model, parent) {
     // according to the model
     SeatView.prototype.update = function() {
         // Update classes
-        switch (this.model.seat.status) {
+        switch (this.model.seat["status"]) {
             case "purchased":
                 $(this.div).attr("class", "seat purchased");
                 break;
             case "reserved":
-                if (this.model.seat.mine) {
+                if (this.model.seat["mine"]) {
                     $(this.div).attr("class", "seat reserved-me");
                 } else {
                     $(this.div).attr("class", "seat reserved");
@@ -55,7 +55,7 @@ function SeatView(model, parent) {
         }
 
         // Update cursor
-        if (this.model.logged && this.model.seat.status != "purchased") {
+        if (this.model.logged && this.model.seat["status"] != "purchased") {
             $(this.div).css("cursor", "pointer");
             $(this.div).children("span").css("cursor", "pointer");
         } else {
@@ -86,8 +86,8 @@ function SeatController(model, view, parentController) {
     // Defines the click handler for the seat according to the model
     SeatController.prototype.init = function() {
         var _this = this;
-        if (this.model.logged && this.model.seat.status != "purchased") {
-            if (this.model.seat.status == "reserved" && this.model.seat.mine) {
+        if (this.model.logged && this.model.seat["status"] != "purchased") {
+            if (this.model.seat["status"] == "reserved" && this.model.seat["mine"]) {
                 this.view.addClick(function() {
                     _this.free();
                 })
@@ -107,46 +107,52 @@ function SeatController(model, view, parentController) {
         this.model.update(mine, status);
         this.view.update();
         this.init();
-        this.parentController.updateSeat(this.model.seat.seatId, oldStatus);
+        this.parentController.updateSeat(this.model.seat["seatId"], oldStatus);
     }
 
     // Handler for a reserve click
     SeatController.prototype.reserve = function() {
         var _this = this;
-        $.post("php/ajax/reserveSeat.php", {seatId: this.model.seat.seatId}, function(json) {
-            var old = _this.model.seat.status;
+        $.post("php/ajax/reserveSeat.php", {seatId: this.model.seat["seatId"]}, function(json) {
+            var old = _this.model.seat["status"];
             if (json["success"]) {
                 _this.update(true, "reserved", old);
-                _this.parentController.showToastSuccess("The seat has been correctly reserved.");
-            } else if (json["reason"] != "failure") {
-                if (json["reason"] == "expired") {
-                    window.location.href = "../../login.php?error=expired";
+                _this.parentController.showToastSuccess(json["reason"]);
+            } else {
+                if (json["reason"] != "Database failure") {
+                    if (json["reason"] == "expired") {
+                        window.location.href = "../../login.php?error=expired";
+                    } else {
+                        _this.update(false, "purchased", old);
+                        _this.parentController.showToastError(json["reason"]);
+                    }
                 } else {
-                    _this.update(false, "purchased", old);
-                    _this.parentController.showToastError("Sorry, the seat was reserved in the mean time.");
+                    _this.parentController.showToastError(json["reason"]);
                 }
             }
-            //TODO ERROR AND TOAST NOTIFICATION
         }, "JSON");
     }
 
     // Handler for a free click
     SeatController.prototype.free = function() {
         var _this = this;
-        $.post("php/ajax/freeSeat.php", {seatId: this.model.seat.seatId}, function(json) {
-            var old = _this.model.seat.status;
+        $.post("php/ajax/freeSeat.php", {seatId: this.model.seat["seatId"]}, function(json) {
+            var old = _this.model.seat["status"];
             if (json["success"]) {
                 _this.update(false, "free", old);
-                _this.parentController.showToastSuccess("The seat has been correctly freed.");
-            } else if (json["reason"] != "failure") {
-                if (json["reason"] == "expired") {
-                    window.location.href = "../../login.php?error=expired";
+                _this.parentController.showToastSuccess(json["reason"]);
+            } else {
+                if (json["reason"] != "Database failure") {
+                    if (json["reason"] == "expired") {
+                        window.location.href = "../../login.php?error=expired";
+                    } else {
+                        _this.update(false, "purchased", old);
+                        _this.parentController.showToastError(json["reason"]);
+                    }
                 } else {
-                    _this.update(false, "purchased", old);
-                    _this.parentController.showToastError("Sorry, the seat was reserved in the mean time.");
+                    _this.parentController.showToastError(json["reason"]);
                 }
             }
-            //TODO ERROR AND TOAST NOTIFICATION
         }, "JSON");
     }
 
