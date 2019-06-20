@@ -64,7 +64,7 @@ function requireCookies() {
 }
 
 function redirect($url) {
-    header("Location: ". $url, true, 303);
+    header("Location: ". $url);
     exit();
 }
 ?>

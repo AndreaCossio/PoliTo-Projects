@@ -113,13 +113,13 @@ function SeatController(model, view, parentController) {
     // Handler for a reserve click
     SeatController.prototype.reserve = function() {
         var _this = this;
-        $.post("/php/ajax/reserveSeat.php", {seatId: this.model.seat.seatId}, function(json) {
+        $.post("php/ajax/reserveSeat.php", {seatId: this.model.seat.seatId}, function(json) {
             var old = _this.model.seat.status;
-            if (json.success) {
+            if (json["success"]) {
                 _this.update(true, "reserved", old);
                 _this.parentController.showToastSuccess("The seat has been correctly reserved.");
-            } else if (json.reason != "failure") {
-                if (json.reason == "expired") {
+            } else if (json["reason"] != "failure") {
+                if (json["reason"] == "expired") {
                     window.location.href = "../../login.php?error=expired";
                 } else {
                     _this.update(false, "purchased", old);
@@ -133,13 +133,13 @@ function SeatController(model, view, parentController) {
     // Handler for a free click
     SeatController.prototype.free = function() {
         var _this = this;
-        $.post("/php/ajax/freeSeat.php", {seatId: this.model.seat.seatId}, function(json) {
+        $.post("php/ajax/freeSeat.php", {seatId: this.model.seat.seatId}, function(json) {
             var old = _this.model.seat.status;
-            if (json.success) {
+            if (json["success"]) {
                 _this.update(false, "free", old);
                 _this.parentController.showToastSuccess("The seat has been correctly freed.");
-            } else if (json.reason != "failure") {
-                if (json.reason == "expired") {
+            } else if (json["reason"] != "failure") {
+                if (json["reason"] == "expired") {
                     window.location.href = "../../login.php?error=expired";
                 } else {
                     _this.update(false, "purchased", old);

@@ -309,15 +309,15 @@ function SeatmapController(model, view) {
     // Handler of the update button
     SeatmapController.prototype.update = function() {
         var _this = this;
-        $.post("/php/ajax/getSeatmap.php", function(json) {
-            if (json.success) {
-                _this.updateAll(json.seatmap);
+        $.post("php/ajax/getSeatmap.php", function(json) {
+            if (json["success"]) {
+                _this.updateAll(json["seatmap"]);
                 _this.showToastSuccess("The seatmap was correclty updated!");
             } else {
-                if (json.reason == "expired") {
+                if (json["reason"] == "expired") {
                     window.location.href = "../../login.php?error=expired";
                 } else {
-                    _this.showToastError(json.reason);
+                    _this.showToastError(json["reason"]);
                 }
             }
         }, "JSON");
@@ -326,15 +326,15 @@ function SeatmapController(model, view) {
     // Handler for the purchase button
     SeatmapController.prototype.purchase = function() {
         var _this = this;
-        $.post("/php/ajax/purchaseSeats.php", {selected: this.model.selected}, function(json) {
-            if (json.success) {
-                _this.updateAll(json.seatmap);
+        $.post("php/ajax/purchaseSeats.php", {selected: this.model.selected}, function(json) {
+            if (json["success"]) {
+                _this.updateAll(json["seatmap"]);
                 _this.showToastSuccess("The seatmap was correclty updated!");
             } else {
-                if (json.reason == "expired") {
+                if (json["reason"] == "expired") {
                     window.location.href = "../../login.php?error=expired";
                 } else {
-                    _this.showToastError(json.reason);
+                    _this.showToastError(json["reason"]);
                 }
             }
         }, "JSON")

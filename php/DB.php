@@ -4,8 +4,8 @@ require_once "functions.php";
 
 class DatabaseHelper {
 
-    public const ROWS = 10;
-    public const COLS = 6;
+    const ROWS = 10;
+    const COLS = 6;
 
     private $_connection;
     private static $_instance = null;
@@ -17,8 +17,6 @@ class DatabaseHelper {
             die("Failed to connect to MySQL: " . $this->_connection->connect_error);
         }
     }
-
-    private function __clone() { }
 
     private function __desctruct() {
         $this->_connection->close();
@@ -365,3 +363,5 @@ class DatabaseHelper {
         return;
     }
 }
+
+?>

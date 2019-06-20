@@ -8,7 +8,7 @@
         $result["success"] = false;
         $result["reason"] = "expired";
         echo json_encode($result);
-    } elseif (isset($_POST['seatId'])) {
+    } else if (isset($_POST['seatId']) && isset($_SESSION['userId'])) {
         $result = DatabaseHelper::getInstance()->freeSeat((int)$_POST['seatId']);
         echo json_encode($result);
     } else {
@@ -16,3 +16,5 @@
     }
     
     exit();
+
+?>

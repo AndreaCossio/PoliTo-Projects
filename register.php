@@ -14,7 +14,7 @@
             redirect("./");
     }
 
-    // Destroy session if the user was logged
+    // Redirect if the user was logged
     if (isset($_SESSION['userId'])) {
         redirect("./");
     }
@@ -35,7 +35,7 @@
     <div class="main">
         <div class="main-container">
             <div class="form-container">
-                <form id="register" action="register.php" method="post">
+                <form id="register" action="register.php" method="post" onsubmit="return validate();">
                     <div class="form-title">
                         <h1>Register</h1>
                         <?php
@@ -63,10 +63,6 @@
         </div>
         <?php require_once "php/fragments/js-cookies.php"?>
     </div>
-
-    <?php
-        require "php/fragments/footer.php"
-    ?>
 
 </body>
 </html>

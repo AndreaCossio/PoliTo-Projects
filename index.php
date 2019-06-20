@@ -21,6 +21,15 @@
 
     <div class="main">
         <div class="main-container">
+            <div class="main-title-container">
+                <?php
+                    startSession();
+                    if(isset($_SESSION["userId"])) { 
+                        $email = htmlentities($_SESSION["email"]);
+                        echo "<p>Welcome back, $email</p>";
+                    }
+                ?>
+            </div>
             <div class="title-container">
                 <div class="places">
                     <h1>Total places: <span>60</span></h1>
@@ -58,13 +67,13 @@
         </div>
     <?php } ?>
 
-    <script type="text/javascript" src="/js/MVC/Seat.js"></script>
-    <script type="text/javascript" src="/js/MVC/Seatmap.js"></script>
+    <script type="text/javascript" src="js/MVC/Seat.js"></script>
+    <script type="text/javascript" src="js/MVC/Seatmap.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $.post("/php/ajax/getSeatmap.php", function(json) {
-                if (json.success) {
-                    var model = new SeatmapModel(json.seatmap,
+            $.post("php/ajax/getSeatmap.php", function(json) {
+                if (json["success"]) {
+                    var model = new SeatmapModel(json["seatmap"],
                         <?php
                             if (isset($_SESSION['userId'])) {
                                 echo "true";
@@ -81,10 +90,6 @@
             }, "JSON");
         });
     </script>
-
-<?php
-    require "php/fragments/footer.php"
-?>
 
 </body>
 </html>

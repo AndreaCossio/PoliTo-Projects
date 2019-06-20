@@ -67,9 +67,5 @@
         <?php require_once "php/fragments/js-cookies.php"?>
     </div>
 
-    <?php
-        require "php/fragments/footer.php"
-    ?>
-
 </body>
 </html>
