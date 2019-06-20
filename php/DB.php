@@ -202,6 +202,7 @@ class DatabaseHelper {
         }
 
         $result["success"] = true;
+        $result["reason"] = "The seatmap has been correctly updated.";
         $result["data"] = array();
 
         // Init empty

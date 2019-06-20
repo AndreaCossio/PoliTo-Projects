@@ -121,7 +121,7 @@ function SeatController(model, view, parentController) {
             } else {
                 if (json["reason"] != "Database failure") {
                     if (json["reason"] == "expired") {
-                        window.location.href = "../../login.php?error=expired";
+                        window.location.href = "login.php?error=expired";
                     } else {
                         _this.update(false, "purchased", old);
                         _this.parentController.showToastError(json["reason"]);
@@ -144,7 +144,7 @@ function SeatController(model, view, parentController) {
             } else {
                 if (json["reason"] != "Database failure") {
                     if (json["reason"] == "expired") {
-                        window.location.href = "../../login.php?error=expired";
+                        window.location.href = "login.php?error=expired";
                     } else {
                         _this.update(false, "purchased", old);
                         _this.parentController.showToastError(json["reason"]);

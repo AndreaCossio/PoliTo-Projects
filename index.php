@@ -1,8 +1,9 @@
 <?php
+    require_once "php/DB.php";
     require_once "php/functions.php";
 
     if (sessionExpired()) {
-        redirect("./login.php?error=expired");
+        redirect("login.php?error=expired");
     }
 ?>
 
@@ -32,7 +33,7 @@
             </div>
             <div class="title-container">
                 <div class="places">
-                    <h1>Total places: <span>60</span></h1>
+                    <h1>Total places: <span><?php echo DatabaseHelper::ROWS*DatabaseHelper::COLS ?></span></h1>
                     <p>Free: <span>0</span></p>
                     <p>Reserved: <span>0</span></p>
                     <p>Purchased: <span>0</span></p>

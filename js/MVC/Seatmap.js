@@ -313,7 +313,7 @@ function SeatmapController(model, view) {
                 _this.showToastSuccess(json["reason"]);
             } else {
                 if (json["reason"] == "expired") {
-                    window.location.href = "../../login.php?error=expired";
+                    window.location.href = "login.php?error=expired";
                 } else {
                     _this.showToastError(json["reason"]);
                 }
@@ -331,7 +331,7 @@ function SeatmapController(model, view) {
             } else {
                 if (json["reason"] != "Database failure") {
                     if (json["reason"] == "expired") {
-                        window.location.href = "../../login.php?error=expired";
+                        window.location.href = "login.php?error=expired";
                     } else {
                         _this.updateAll(json);
                         _this.showToastError(json["reason"]);

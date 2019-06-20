@@ -11,11 +11,11 @@
                         <a href="register.php">Register</a>';
             }
         } elseif (strpos($_SERVER['SCRIPT_NAME'], "login")) {
-            echo '  <a href="/">Home</a>
+            echo '  <a href=".">Home</a>
                     <a href="javascript:void(0)" class="active">Login</a>
                     <a href="register.php">Register</a>';
         } elseif (strpos($_SERVER['SCRIPT_NAME'], "register")) {
-            echo '  <a href="/">Home</a>
+            echo '  <a href=".">Home</a>
                     <a href="login.php">Login</a>
                     <a href="javascript:void(0)" class="active">Register</a>';
         }
