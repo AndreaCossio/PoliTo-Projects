@@ -58,7 +58,7 @@
         <div id="toast-error" class="toast-container">
             <div class="toast toast-error">
                 <div class="toast-content">
-                    <p class="toast-title">Success</p>
+                    <p class="toast-title">Error</p>
                     <p class="toast-text"></p>
                 </div>
                 <div class="toast-close">
