@@ -1,10 +1,24 @@
 # Distributed Programming I
 
+## Table of Contents
+
+1. [Table of Contents](#table-of-contents)
+2. [Web Programming Test Assignment A.Y. 2018/2019](#web-programming-test-assignment-A.Y.-2018/2019)
+    - [Website characteristics](#website-characteristics)
+        - [Homepage](#homepage)
+        - [Authentication](#authentication)
+        - [Reservation of seats](#reservation-of-seats)
+        - [Update seat map](#update-seat-map)
+        - [Purchase of seats](#purchase-of-seats)
+        - [Functionalities](#Functionalities)
+3. [Example and images of my implementation](#example-and-images-of-my-implementation)
+4. [How to use](#how-to-use)
+
 ## Web Programming Test Assignment A.Y. 2018/2019
 
 Build asimplified version of a website to manage seat reservations for an airplane. For simplicity, consider reservations for one plane and one journey only. Consider a cabin with seats arranged according to a rectangular layout of known size: `6 seats in width x 10 places in length`. These values must be easily adjustableby setting two variables in a single position in the PHP code. The seats in a row are indicated with a letter starting from `A`, the rows with a number starting from `1`.
 
-### The website must have the following characteristics
+### Website characteristics
 
 #### Homepage
 
@@ -101,3 +115,46 @@ User `U2` **reserves** `F4`, which becomes yellow in the user’s view.
 User `U1` **updates** the seat map: `F4` has turned orange.
 
 ![8](images/8.PNG)
+
+## How to use
+
+To make it works on your local machine:
+
+1. Create a file `php/Config/db_config.php` with the credentials for your MySQL database:
+
+    ```php
+    <?php
+        $default_host = "<db_password_string>";
+        $default_user = "<db_user_string>";
+        $default_pw = "<db_password_string>";
+        $default_db = "<db_name_string>";
+    ?>
+    ```
+
+2. Create the following tables:
+
+    ```sql
+    DROP TABLE IF EXISTS `seatmap`;
+    CREATE TABLE `seatmap` (
+        `seatId` varchar(5) NOT NULL,
+        `userId` int(11) NOT NULL,
+        `status` varchar(16) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    DROP TABLE IF EXISTS `users`;
+    CREATE TABLE `users` (
+        `userId` int(11) NOT NULL,
+        `email` varchar(256) NOT NULL,
+        `password` text NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    ALTER TABLE `seatmap`
+        ADD PRIMARY KEY (`seatId`);
+
+    ALTER TABLE `users`
+        ADD PRIMARY KEY (`userId`),
+        ADD UNIQUE KEY `email` (`email`);
+
+    ALTER TABLE `users`
+        MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+    ```
