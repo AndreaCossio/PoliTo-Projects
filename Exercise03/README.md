@@ -13,11 +13,11 @@ Example:
     s1,2016-01-03	55.5
     s2,2016-01-03	52.5
 
-**Output**: number of occurrences of each word appearing in each input file. Example: 
+**Output**: number of values above the threshold for each sensor. Example: 
 
     s1  2
     s2  1
 
 ```sh
-BD-Labs/Exercise02/target$ hadoop jar Exercise02-1.jar it.polito.bigdata.hadoop.E02Driver 1 ./in/ ./out/
+BD-Labs/Exercise03/target$ hadoop jar Exercise03-1.jar it.polito.bigdata.hadoop.E03Driver 1 ./in/ ./out/ 50
 ```
