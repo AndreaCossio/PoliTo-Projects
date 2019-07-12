@@ -1,7 +1,6 @@
 package it.polito.bigdata.hadoop;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.DoubleWritable;
