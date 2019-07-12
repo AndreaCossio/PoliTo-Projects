@@ -6,4 +6,5 @@
 
 ### Hadoop and MapReduce
 
-- [Exercise_01](./Exercise01) - Word Count
+- [Exercise 01](./Exercise01) - Word Count
+- [Exercise 02](./Exercise02) - Word Count with multiple inputs

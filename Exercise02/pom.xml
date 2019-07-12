@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>it.polito.bigdata.hadoop</groupId>
-  <artifactId>Boilerplate</artifactId>
+  <artifactId>Exercise02</artifactId>
   <version>1</version>
 
-  <name>Boilerplate</name>
+  <name>Exercise02</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
