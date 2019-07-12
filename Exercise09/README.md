@@ -1,4 +1,4 @@
-# Word Count
+# Word Count - in-Mapper combiner
 
 **Input**: HDFS folder. Example:
 
@@ -27,5 +27,5 @@
     word	8
 
 ```sh
-BD-Labs/Exercise02/target$ hadoop jar Exercise02-1.jar it.polito.bigdata.hadoop.E02Driver 1 ./in/ ./out/
+BD-Labs/Exercise09/target$ hadoop jar Exercise09-1.jar it.polito.bigdata.hadoop.E09Driver 1 ./in/ ./out/
 ```
