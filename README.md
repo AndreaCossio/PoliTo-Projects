@@ -13,3 +13,4 @@
 - [Exercise 05](./Exercise05) - PM10 pollution analysis - Average
 - [Exercise 06](./Exercise06) - PM10 pollution analysis - Min and Max
 - [Exercise 07](./Exercise07) - Reverse Index
+- [Exercise 08](./Exercise08) - Income analysis (double job)
