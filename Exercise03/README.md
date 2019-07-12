@@ -1,4 +1,4 @@
-# PM10 pollution analysis
+# PM10 pollution analysis - Threshold
 
 **Input**: structured textual file. Each line has the following format:
 

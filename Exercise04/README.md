@@ -1,4 +1,4 @@
-# PM10 pollution analysis per city zone
+# PM10 pollution analysis - City zone
 
 **Input**: structured textual file. Each line has the following format:
 
