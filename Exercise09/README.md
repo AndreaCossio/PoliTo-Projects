@@ -1,4 +1,4 @@
-# Word Count - in-Mapper combiner
+# Word Count (In-Mapper Combiner)
 
 **Input**: HDFS folder. Example:
 

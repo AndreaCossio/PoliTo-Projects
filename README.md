@@ -13,5 +13,6 @@
 - [Exercise 05](./Exercise05) - PM10 pollution analysis - Average
 - [Exercise 06](./Exercise06) - PM10 pollution analysis - Min and Max
 - [Exercise 07](./Exercise07) - Reverse Index
-- [Exercise 08](./Exercise08) - Income analysis (double job)
-- [Exercise 09](./Exercise09) - Word Count (in-Mapper combiner)
+- [Exercise 08](./Exercise08) - Income analysis (Double job)
+- [Exercise 09](./Exercise09) - Word Count (In-Mapper combiner)
+- [Exercise 10](./Exercise10) - Count records (Counters)
