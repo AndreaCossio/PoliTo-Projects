@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.Writable;
 
-public class DateIncome implements Writable {
+public class DateIncome implements Comparable<DateIncome>, Writable {
 
 	private String date;
 	private Integer income;
@@ -18,6 +18,11 @@ public class DateIncome implements Writable {
     public DateIncome(String date, Integer income) {
         this.date = date;
         this.income = income;
+    }
+
+    public DateIncome(DateIncome other) {
+        this.date = other.getDate();
+        this.income = other.getIncome();
     }
 
 	public String getDate() {
@@ -34,6 +39,15 @@ public class DateIncome implements Writable {
 
 	public void setIncome(Integer income) {
 		this.income = income;
+    }
+
+	@Override
+	public int compareTo(DateIncome other) {
+		if (this.income.compareTo(other.getIncome()) != 0) {
+			return this.income.compareTo(other.getIncome());
+		} else {
+			return this.date.compareTo(other.getDate());
+		}
 	}
 
 	@Override

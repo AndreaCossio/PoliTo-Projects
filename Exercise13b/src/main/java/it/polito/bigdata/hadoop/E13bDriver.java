@@ -14,7 +14,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class E13Driver extends Configured implements Tool {
+public class E13bDriver extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
@@ -25,25 +25,26 @@ public class E13Driver extends Configured implements Tool {
 
         // Retrieve configuration
         Configuration conf = this.getConf();
+        conf.set("topK", args[3]);
 
         // Define job
         Job job = Job.getInstance(conf);
-        job.setJobName("Exercise13");
+        job.setJobName("Exercise13b");
 
         // Driver
-        job.setJarByClass(E13Driver.class);
+        job.setJarByClass(E13bDriver.class);
         FileInputFormat.addInputPath(job, inPath);
         FileOutputFormat.setOutputPath(job, outPath);
         job.setInputFormatClass(KeyValueTextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
         // Mapper
-        job.setMapperClass(E13Mapper.class);
+        job.setMapperClass(E13bMapper.class);
         job.setMapOutputKeyClass(NullWritable.class);
         job.setMapOutputValueClass(DateIncome.class);
 
         // Reducer
-        job.setReducerClass(E13Reducer.class);
+        job.setReducerClass(E13bReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
         job.setNumReduceTasks(numReducers);
@@ -57,7 +58,7 @@ public class E13Driver extends Configured implements Tool {
     }
 
     public static void main(String args[]) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new E13Driver(), args);
+        int res = ToolRunner.run(new Configuration(), new E13bDriver(), args);
 
         System.exit(res);
     }

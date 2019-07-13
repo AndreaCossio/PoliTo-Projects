@@ -3,18 +3,18 @@ package it.polito.bigdata.hadoop;
 import java.io.IOException;
 
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class E13Reducer extends Reducer<NullWritable, DateIncome, Text, DoubleWritable> {
+public class E13Reducer extends Reducer<NullWritable, DateIncome, Text, IntWritable> {
 
     @Override
     protected void reduce(NullWritable key, Iterable<DateIncome> values, Context context) throws IOException, InterruptedException {
 
-        double income;
+        Integer income;
         String date;
-        DateIncome top = new DateIncome(null, Double.MIN_VALUE);
+        DateIncome top = new DateIncome(null, Integer.MIN_VALUE);
 
         for (DateIncome d : values) {
             date = d.getDate();
@@ -25,6 +25,6 @@ public class E13Reducer extends Reducer<NullWritable, DateIncome, Text, DoubleWr
             }
         }
 
-        context.write(new Text(top.getDate()), new DoubleWritable(top.getIncome()));
+        context.write(new Text(top.getDate()), new IntWritable(top.getIncome()));
     }
 }
