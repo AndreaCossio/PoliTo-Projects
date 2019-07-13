@@ -18,3 +18,4 @@
 - [Exercise 10](./Exercise10) - Count records (Counters - Map-only)
 - [Exercise 11](./Exercise11) - PM10 pollution analysis - Average (Custom Data Type)
 - [Exercise 12](./Exercise12) - PM10 pollution analysis - Threshold (Map-only)
+- [Exercise 13](./Exercise13) - Income analysis (Top 1)
