@@ -13,7 +13,7 @@ Example:
     s1,2016-01-03	55.5
     s2,2016-01-03	52.5
 
-**Output**: number of values above the threshold for each sensor. Example: 
+**Output**: number of values above the threshold for each sensor. Example (thr = 50):
 
     s1  2
     s2  1

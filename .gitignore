@@ -7,3 +7,5 @@
 **/target/mav*
 **/target/surefire-reports
 **/target/test-classes
+
+gen.sh
