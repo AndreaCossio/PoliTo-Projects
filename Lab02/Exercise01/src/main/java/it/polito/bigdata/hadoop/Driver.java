@@ -3,11 +3,11 @@ package it.polito.bigdata.hadoop;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
@@ -15,25 +15,25 @@ import org.apache.hadoop.util.ToolRunner;
 
 public class Driver extends Configured implements Tool {
 
-    @Override
-    public int run(String[] args) throws Exception {
+	@Override
+	public int run(String[] args) throws Exception {
 
-        int numReducers = Integer.parseInt(args[0]);
-        Path inPath = new Path(args[1]);
-        Path outPath = new Path(args[2]);
+		Path inPath = new Path(args[0]);
+		Path outPath = new Path(args[1]);
 
-        // Retrieve configuration
-        Configuration conf = this.getConf();
+		// Retrieve configuration
+		Configuration conf = this.getConf();
+		conf.set("prefix", args[2]);
 
-        // Define job
-        Job job = Job.getInstance(conf);
-        job.setJobName("Lab01_Ex02");
+		// Define job
+		Job job = Job.getInstance(conf);
+		job.setJobName("Lab2_Ex01");
 
-        // Driver
+		// Driver
         job.setJarByClass(Driver.class);
         FileInputFormat.addInputPath(job, inPath);
         FileOutputFormat.setOutputPath(job, outPath);
-        job.setInputFormatClass(TextInputFormat.class);
+        job.setInputFormatClass(KeyValueTextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
         // Mapper
@@ -42,10 +42,7 @@ public class Driver extends Configured implements Tool {
         job.setMapOutputValueClass(IntWritable.class);
 
         // Reducer
-        job.setReducerClass(Reducer01.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
-        job.setNumReduceTasks(numReducers);
+        job.setNumReduceTasks(0);
 
         // Execute the job and wait for completion
         if (job.waitForCompletion(true) == true) {
@@ -53,10 +50,13 @@ public class Driver extends Configured implements Tool {
         } else {
             return 1;
         }
-    }
 
-    public static void main(String args[]) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new Driver(), args);
-        System.exit(res);
-    }
+	}
+
+	public static void main(String args[]) throws Exception {
+		// Exploit the ToolRunner class to "configure" and run the Hadoop application
+		int res = ToolRunner.run(new Configuration(), new Driver(), args);
+
+		System.exit(res);
+	}
 }
