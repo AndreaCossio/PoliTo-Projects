@@ -2,6 +2,10 @@
 
 ## Labs
 
+### Hadoop and MapReduce
+
+- [Lab 01](./Lab01) - Word Count
+
 ## Exercises
 
 ### Hadoop and MapReduce
