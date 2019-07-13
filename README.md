@@ -23,3 +23,4 @@
 - [Exercise 17](./Exercise17) - Temperatures (Multiple Inputs)
 - [Exercise 20](./Exercise20) - Temperatures (Multiple Outputs)
 - [Exercise 21](./Exercise21) - Stopwords (Cached files)
+- [Exercise 22](./Exercise22) - Friends
