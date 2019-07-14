@@ -28,7 +28,8 @@
 - [Exercise 17](./Exercise17) - Temperatures (Multiple Inputs)
 - [Exercise 20](./Exercise20) - Temperatures (Multiple Outputs)
 - [Exercise 21](./Exercise21) - Stopwords (Cached files)
-- [Exercise 22](./Exercise22) - Friends
+- [Exercise 22](./Exercise22) - Friends - List
 - [Exercise 23](./Exercise23) - Friends - Potential list
 - [Exercise 23b](./Exercise23b) - Friends - Potential list without friends
-- [Exercise 24](./Exercise24) - Friends - List
+- [Exercise 24](./Exercise24) - Friends - List of each user
+- [Exercise 25](./Exercise25) - Friends - Potential list of each user
