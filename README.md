@@ -4,8 +4,12 @@
 
 ### Hadoop and MapReduce
 
-- [Lab 01](./Lab01) - Word Count
-- [Lab 02](./Lab02) - Map-Only job filter
+- [Lab 01](./Lab01)
+    - [Exercise 01](./Lab01/Exercise01) - Word Count
+    - [Exercise 02](./Lab01/Exercise02) - 2-grams Count
+- [Lab 02](./Lab02)
+    - [Exercise 01](./Lab02/Exercise01) - Word Count filter
+    - [Exercise 02](./Lab02/Exercise02) - 2-grams Count filter
 
 ## Exercises
 
@@ -35,3 +39,4 @@
 - [Exercise 25](./Exercise25) - Friends - Potential list of each user
 - [Exercise 26](./Exercise26) - Dictionary (Cached files)
 - [Exercise 27](./Exercise27) - Categorization rules
+- [Exercise 28](./Exercise28) - Mapping questions and answers (Multiple Inputs)
