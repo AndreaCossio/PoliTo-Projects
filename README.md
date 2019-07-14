@@ -33,3 +33,4 @@
 - [Exercise 23b](./Exercise23b) - Friends - Potential list without friends
 - [Exercise 24](./Exercise24) - Friends - List of each user
 - [Exercise 25](./Exercise25) - Friends - Potential list of each user
+- [Exercise 26](./Exercise26) - Dictionary (Cached files)
