@@ -5,6 +5,7 @@
 ### Hadoop and MapReduce
 
 - [Lab 01](./Lab01) - Word Count
+- [Lab 02](./Lab02) - Map-Only job filter
 
 ## Exercises
 
@@ -28,3 +29,5 @@
 - [Exercise 20](./Exercise20) - Temperatures (Multiple Outputs)
 - [Exercise 21](./Exercise21) - Stopwords (Cached files)
 - [Exercise 22](./Exercise22) - Friends
+- [Exercise 23](./Exercise23) - Friends - Potential list
+- [Exercise 23b](./Exercise23b) - Friends - Potential list without friends
