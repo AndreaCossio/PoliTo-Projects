@@ -12,6 +12,8 @@
     - [Exercise 02](./Lab02/Exercise02) - 2-grams Count filter
 - [Lab 03](./Lab03)
     - [Exercise 01](./Lab03/Exercise01) - Recommendation system
+- [Lab 04](./Lab04)
+    - [Exercise 01](./Lab04/Exercise01) - Ratings normalization
 
 ## Exercises
 
