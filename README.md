@@ -10,6 +10,8 @@
 - [Lab 02](./Lab02)
     - [Exercise 01](./Lab02/Exercise01) - Word Count filter
     - [Exercise 02](./Lab02/Exercise02) - 2-grams Count filter
+- [Lab 03](./Lab03)
+    - [Exercise 01](./Lab03/Exercise01) - Recommendation system
 
 ## Exercises
 
