@@ -40,3 +40,4 @@
 - [Exercise 26](./Exercise26) - Dictionary (Cached files)
 - [Exercise 27](./Exercise27) - Categorization rules
 - [Exercise 28](./Exercise28) - Mapping questions and answers (Multiple Inputs)
+- [Exercise 29](./Exercise29) - User selection (Multiple Inputs)
