@@ -31,3 +31,4 @@
 - [Exercise 22](./Exercise22) - Friends
 - [Exercise 23](./Exercise23) - Friends - Potential list
 - [Exercise 23b](./Exercise23b) - Friends - Potential list without friends
+- [Exercise 24](./Exercise24) - Friends - List
