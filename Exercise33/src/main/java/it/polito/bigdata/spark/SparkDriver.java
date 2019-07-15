@@ -11,8 +11,7 @@ public class SparkDriver {
 	public static void main(String[] args) {
 
 		String inputPath = args[0];
-        String outputPath = args[1];
-        Integer n = Integer.parseInt(args[2]);
+        Integer n = Integer.parseInt(args[1]);
 	
 		// Setup
 		SparkConf conf = new SparkConf().setAppName("Exercise33");
@@ -21,7 +20,7 @@ public class SparkDriver {
 		// Read the content of the input file
         JavaRDD<String> records = context.textFile(inputPath);
 
-		// Filter lines containing the given word
+		// Map the records to the value and find the top n ones
         List<Double> result = records.map(x -> Double.parseDouble(x.split(",")[2])).top(n);
         
         // Print to stdout

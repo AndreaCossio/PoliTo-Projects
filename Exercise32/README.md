@@ -18,5 +18,5 @@ Example:
     60.2
 
 ```sh
-BD-Labs/Exercise32/target$ spark-submit --class it.polito.bigdata.spark.SparkDriver --deploy-mode client --master local Exercise32-1.jar ./in/ ./out/
+BD-Labs/Exercise32/target$ spark-submit --class it.polito.bigdata.spark.SparkDriver --deploy-mode client --master local Exercise32-1.jar ./in/
 ```

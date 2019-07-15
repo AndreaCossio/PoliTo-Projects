@@ -19,7 +19,7 @@ public class SparkDriver {
 		// Read the content of the input file
 		JavaRDD<String> list = context.textFile(inputPath);
 
-		// Filter lines containing the given word
+		// Filter lines containing the given word and map them to the IP
 		JavaRDD<String> result = list.filter(x -> x.toLowerCase().contains(word)).map(x -> x.split(" -")[0]).distinct();
 		
 		// Store the result in the output folder

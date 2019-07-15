@@ -12,4 +12,7 @@
 **/target/in/Rev*
 **/target/in/Amazo*
 
+gen.sh
+run.sh
+compile.sh
 *.pdf

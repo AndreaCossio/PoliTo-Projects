@@ -14,22 +14,28 @@ public class SparkDriver {
         String outputPath = args[1];
 	
 		// Setup
-		SparkConf conf = new SparkConf().setAppName("Exercise34");
+		SparkConf conf = new SparkConf().setAppName("Exercise35");
 		JavaSparkContext context = new JavaSparkContext(conf);
 
 		// Read the content of the input file
         JavaRDD<String> records = context.textFile(inputPath).cache();
 
-		// Map the records to the value and find the highest one
-        List<Double> list = records.map(x -> Double.parseDouble(x.split(",")[2])).top(1);
+        // Gather the maximum value
+        List<Double> list = records.map(
+            x -> Double.parseDouble(x.split(",")[2])
+        ).top(1);
 
-        // Filter the input records with the highest value
-        JavaRDD<String> result = records.filter(x -> list.get(0).equals(Double.parseDouble(x.split(",")[2])));
+        // Filter records and map to distinct dates
+        JavaRDD<String> result = records
+            .filter(x -> list.get(0).equals(Double.parseDouble(x.split(",")[2])))
+            .map(x -> x.split(",")[1])
+            .distinct();
         
-        // Store the result in the output folder
-		result.saveAsTextFile(outputPath);
+        // Write the result to HDFS
+        result.saveAsTextFile(outputPath);
 
 		// Close the Spark context
 		context.close();
 	}
 }
+
