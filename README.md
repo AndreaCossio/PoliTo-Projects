@@ -52,3 +52,4 @@
 - [Exercise 31](./Exercise31) - Log Filtering + Map and distinct
 - [Exercise 32](./Exercise32) - PM10 pollution analysis - Maximum value
 - [Exercise 33](./Exercise33) - PM10 pollution analysis - TopK Maximum value
+- [Exercise 34](./Exercise34) - PM10 pollution analysis - Maximum value records
