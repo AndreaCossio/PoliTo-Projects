@@ -21,5 +21,5 @@ Example:
     (1,s2)
 
 ```sh
-BD-Labs/Exercise40/target$ spark-submit --class it.polito.bigdata.spark.SparkDriver --deploy-mode client --master local Exercise40-1.jar ./in/ ./out/ 50 2
+BD-Labs/Exercise41/target$ spark-submit --class it.polito.bigdata.spark.SparkDriver --deploy-mode client --master local Exercise41-1.jar ./in/ ./out/ 50 2
 ```
