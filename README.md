@@ -54,3 +54,4 @@
 - [Exercise 33](./Exercise33) - PM10 pollution analysis - TopK Maximum value
 - [Exercise 34](./Exercise34) - PM10 pollution analysis - Maximum value records (Cache)
 - [Exercise 35](./Exercise35) - PM10 pollution analysis - Distinct dates
+- [Exercise 36](./Exercise36) - PM10 pollution analysis - Average

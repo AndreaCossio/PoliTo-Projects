@@ -1,4 +1,4 @@
-# PM10 pollution analysis - Distinct dates
+# PM10 pollution analysis - Average
 
 **Input**: a collection of structured CSV files containing the daily value of PM10 value for a set of sensors with the following format:
 
@@ -14,11 +14,10 @@ Example:
     s2,2016-01-03,52.5
     s3,2016-01-03,60.2
 
-**Output**: the dates associated with the maximum value. Example: 
+**Output**: the average value of PM10. Example: 
 
-    2016-01-02
-    2016-01-03
+    43.44
 
 ```sh
-BD-Labs/Exercise35/target$ spark-submit --class it.polito.bigdata.spark.SparkDriver --deploy-mode client --master local Exercise35-1.jar ./in/ ./out/
+BD-Labs/Exercise36/target$ spark-submit --class it.polito.bigdata.spark.SparkDriver --deploy-mode client --master local Exercise36-1.jar ./in/
 ```
