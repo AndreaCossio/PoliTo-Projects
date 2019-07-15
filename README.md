@@ -56,3 +56,4 @@
 - [Exercise 35](./Exercise35) - PM10 pollution analysis - Distinct dates
 - [Exercise 36](./Exercise36) - PM10 pollution analysis - Average
 - [Exercise 37](./Exercise37) - PM10 pollution analysis - Maximum for each sensor
+- [Exercise 38](./Exercise38) - PM10 pollution analysis - Threshold
