@@ -62,3 +62,4 @@
 - [Exercise 40](./Exercise40) - PM10 pollution analysis - Order
 - [Exercise 41](./Exercise41) - PM10 pollution analysis - Order and TopK
 - [Exercise 42](./Exercise42) - Mapping questions and answers
+- [Exercise 43](./Exercise43) - Critical bike sharing analysis
