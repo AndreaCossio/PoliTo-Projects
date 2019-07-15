@@ -16,7 +16,7 @@ Example:
 
 **Output**: the sensors with more than 2 readings with a value of PM10 greater than a given threshold. Example (thr = 50): 
 
-    s1,2
+    (s1,2)
 
 ```sh
 BD-Labs/Exercise38/target$ spark-submit --class it.polito.bigdata.spark.SparkDriver --deploy-mode client --master local Exercise38-1.jar ./in/ ./out/ 50
