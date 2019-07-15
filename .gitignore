@@ -8,7 +8,9 @@
 **/target/surefire-reports
 **/target/test-classes
 **/target/out
+
 **/target/in/Rev*
 **/target/in/Amazo*
-
 gen.sh
+
+*.pdf

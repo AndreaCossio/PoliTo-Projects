@@ -45,3 +45,8 @@
 - [Exercise 27](./Exercise27) - Categorization rules
 - [Exercise 28](./Exercise28) - Mapping questions and answers (Multiple Inputs)
 - [Exercise 29](./Exercise29) - User selection (Multiple Inputs)
+
+### Spark
+
+- [Exercise 30](./Exercise30) - Log Filtering
+- [Exercise 30](./Exercise30) - Log Filtering + Map and distinct
