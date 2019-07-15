@@ -59,3 +59,4 @@
 - [Exercise 38](./Exercise38) - PM10 pollution analysis - Threshold
 - [Exercise 39](./Exercise39) - PM10 pollution analysis - Critical date analysis
 - [Exercise 39b](./Exercise39b) - PM10 pollution analysis - Critical date analysis
+- [Exercise 40](./Exercise40) - PM10 pollution analysis - Order
