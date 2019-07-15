@@ -1,5 +1,7 @@
 package it.polito.bigdata.spark;
 
+import java.util.List;
+
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -14,9 +16,10 @@ public class SparkDriver {
 		String inputPath = args[0];
         String outputPath = args[1];
         Double threshold = Double.parseDouble(args[2]);
+        Integer k = Integer.parseInt(args[3]);
 	
 		// Setup
-		SparkConf conf = new SparkConf().setAppName("Exercise40");
+		SparkConf conf = new SparkConf().setAppName("Exercise41");
 		JavaSparkContext context = new JavaSparkContext(conf);
 
 		// Read the content of the input file
@@ -29,9 +32,11 @@ public class SparkDriver {
             return new Tuple2<String, Integer>(x.split(",")[0], 1);
         }).reduceByKey((a, b) -> a + b);
 
-        JavaPairRDD<Integer, String> result = count.mapToPair(x -> {
+        List<Tuple2<Integer, String>> list = count.mapToPair(x -> {
             return new Tuple2<Integer, String>(x._2(), x._1());
-        }).sortByKey(false);
+        }).sortByKey(false).take(k);
+
+        JavaPairRDD<Integer, String> result = context.parallelizePairs(list);
 
         // Write the result to the HDFS
         result.saveAsTextFile(outputPath);
