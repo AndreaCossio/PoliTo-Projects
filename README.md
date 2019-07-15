@@ -64,3 +64,5 @@
 - [Exercise 42](./Exercise42) - Mapping questions and answers
 - [Exercise 43](./Exercise43) - Critical bike sharing analysis
 - [Exercise 44](./Exercise44) - Misleading profile selection
+- [Exercise 45](./Exercise45) - Misleading profile selection bis
+- [Exercise 46](./Exercise46) - Timeseries analysis
