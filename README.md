@@ -66,3 +66,4 @@
 - [Exercise 44](./Exercise44) - Misleading profile selection
 - [Exercise 45](./Exercise45) - Misleading profile selection bis
 - [Exercise 46](./Exercise46) - Timeseries analysis
+- [Exercise 47](./Exercise47) - Full station identification in real-time
