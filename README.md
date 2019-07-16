@@ -19,6 +19,8 @@
 
 - [Lab 05](./Lab05)
     - [Exercise 01](./Lab05/Exercise01) - Filtering
+- [Lab 06](./Lab06)
+    - [Exercise 01](./Lab06/Exercise01) - PairRDD and Top elements
 
 ## Exercises
 

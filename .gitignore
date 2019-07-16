@@ -9,8 +9,8 @@
 **/target/test-classes
 **/target/out
 
-**/target/in/Rev*
-**/target/in/Amazo*
+**/Full_*
+**/Sample_*
 
 gen.sh
 run.sh
