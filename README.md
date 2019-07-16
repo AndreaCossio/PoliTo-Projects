@@ -15,6 +15,11 @@
 - [Lab 04](./Lab04)
     - [Exercise 01](./Lab04/Exercise01) - Ratings normalization
 
+### Spark
+
+- [Lab 05](./Lab05)
+    - [Exercise 01](./Lab05/Exercise01) - Filtering
+
 ## Exercises
 
 ### Hadoop and MapReduce
