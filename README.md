@@ -4,23 +4,16 @@
 
 ### Hadoop and MapReduce
 
-- [Lab 01](./Lab01)
-    - [Exercise 01](./Lab01/Exercise01) - Word Count
-    - [Exercise 02](./Lab01/Exercise02) - 2-grams Count
-- [Lab 02](./Lab02)
-    - [Exercise 01](./Lab02/Exercise01) - Word Count filter
-    - [Exercise 02](./Lab02/Exercise02) - 2-grams Count filter
-- [Lab 03](./Lab03)
-    - [Exercise 01](./Lab03/Exercise01) - Recommendation system
-- [Lab 04](./Lab04)
-    - [Exercise 01](./Lab04/Exercise01) - Ratings normalization
+- [Lab 01](./Lab01) - Word count
+- [Lab 02](./Lab02) - Filtering
+- [Lab 03](./Lab03) - Recommendation system
+- [Lab 04](./Lab04) - Ratings normalization
 
 ### Spark
 
-- [Lab 05](./Lab05)
-    - [Exercise 01](./Lab05/Exercise01) - Filtering
-- [Lab 06](./Lab06)
-    - [Exercise 01](./Lab06/Exercise01) - PairRDD and Top elements
+- [Lab 05](./Lab05) - Filtering
+- [Lab 06](./Lab06) - PairRDD and Top elements
+- [Lab 07](./Lab07) - Bike sharing data analysis
 
 ## Exercises
 
