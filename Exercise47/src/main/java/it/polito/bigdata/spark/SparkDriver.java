@@ -11,20 +11,20 @@ import org.apache.spark.streaming.api.java.JavaReceiverInputDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 
 import scala.Tuple2;
-	
-public class SparkDriver {
-	
-	public static void main(String[] args) throws InterruptedException {
 
-		String inputPath = args[0];
+public class SparkDriver {
+
+    public static void main(String[] args) throws InterruptedException {
+
+        String inputPath = args[0];
         String outputPath = args[1];
-	
-		// Setup
-		SparkConf conf = new SparkConf().setAppName("Exercise47");
-		JavaStreamingContext streamingContext = new JavaStreamingContext(conf, Durations.seconds(2));
+
+        // Setup
+        SparkConf conf = new SparkConf().setAppName("Exercise47");
+        JavaStreamingContext streamingContext = new JavaStreamingContext(conf, Durations.seconds(2));
         JavaSparkContext sparkContext = streamingContext.sparkContext();
 
-		// Read the content of the input file
+        // Read the content of the input file
         JavaRDD<String> records = sparkContext.textFile(inputPath);
 
         // Create pairs (stationId, name)
@@ -49,9 +49,9 @@ public class SparkDriver {
         stationNameTime.print();
         stationNameTime.dstream().saveAsTextFiles(outputPath, "");
 
-		// Close the streaming context
-		streamingContext.start();
-		streamingContext.awaitTerminationOrTimeout(120000);
-		streamingContext.close();
-	}
+        // Close the streaming context
+        streamingContext.start();
+        streamingContext.awaitTerminationOrTimeout(120000);
+        streamingContext.close();
+    }
 }

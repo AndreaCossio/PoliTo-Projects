@@ -7,55 +7,55 @@ import java.util.Date;
 
 public class MyDate {
 
-	public static String DayOfTheWeek(String date) {
+    public static String DayOfTheWeek(String date) {
 
-		String dayOfTheWeek;
-		Date d = new Date();
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String dayOfTheWeek;
+        Date d = new Date();
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-		try {
-			d = format.parse(date);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+        try {
+            d = format.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-		cal.setTime(d);
+        cal.setTime(d);
 
-		switch (cal.get(Calendar.DAY_OF_WEEK)) {
-		case Calendar.SUNDAY:
-			dayOfTheWeek = "Sun";
-			break;
+        switch (cal.get(Calendar.DAY_OF_WEEK)) {
+        case Calendar.SUNDAY:
+            dayOfTheWeek = "Sun";
+            break;
 
-		case Calendar.MONDAY:
-			dayOfTheWeek = "Mon";
-			break;
+        case Calendar.MONDAY:
+            dayOfTheWeek = "Mon";
+            break;
 
-		case Calendar.TUESDAY:
-			dayOfTheWeek = "Tue";
-			break;
+        case Calendar.TUESDAY:
+            dayOfTheWeek = "Tue";
+            break;
 
-		case Calendar.WEDNESDAY:
-			dayOfTheWeek = "Wed";
-			break;
+        case Calendar.WEDNESDAY:
+            dayOfTheWeek = "Wed";
+            break;
 
-		case Calendar.THURSDAY:
-			dayOfTheWeek = "Thu";
-			break;
+        case Calendar.THURSDAY:
+            dayOfTheWeek = "Thu";
+            break;
 
-		case Calendar.FRIDAY:
-			dayOfTheWeek = "Fri";
-			break;
+        case Calendar.FRIDAY:
+            dayOfTheWeek = "Fri";
+            break;
 
-		case Calendar.SATURDAY:
-			dayOfTheWeek = "Sat";
-			break;
+        case Calendar.SATURDAY:
+            dayOfTheWeek = "Sat";
+            break;
 
-		default:
-			dayOfTheWeek = "Sat";
-		}
+        default:
+            dayOfTheWeek = "Sat";
+        }
 
-		return dayOfTheWeek;
-	}
+        return dayOfTheWeek;
+    }
 
 }

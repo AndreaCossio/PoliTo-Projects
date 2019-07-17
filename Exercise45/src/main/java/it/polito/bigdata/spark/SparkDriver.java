@@ -9,22 +9,22 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 
 import scala.Tuple2;
-	
-public class SparkDriver {
-	
-	public static void main(String[] args) {
 
-		String inputPath = args[0];
-		String inputPath2 = args[1];
-		String inputPath3 = args[2];
+public class SparkDriver {
+
+    public static void main(String[] args) {
+
+        String inputPath = args[0];
+        String inputPath2 = args[1];
+        String inputPath3 = args[2];
         String outputPath = args[3];
         Double threshold = Double.parseDouble(args[4]);
-	
-		// Setup
-		SparkConf conf = new SparkConf().setAppName("Exercise45");
-		JavaSparkContext context = new JavaSparkContext(conf);
 
-		// Read the content of the input file
+        // Setup
+        SparkConf conf = new SparkConf().setAppName("Exercise45");
+        JavaSparkContext context = new JavaSparkContext(conf);
+
+        // Read the content of the input file
         JavaRDD<String> records = context.textFile(inputPath);
         JavaRDD<String> preferences = context.textFile(inputPath2);
         JavaRDD<String> movies = context.textFile(inputPath3);
@@ -41,7 +41,7 @@ public class SparkDriver {
             return new Tuple2<>(splits[0], splits[2]);
         });
 
-        //Create pairs (user, genre)
+        // Create pairs (user, genre)
         JavaPairRDD<String, String> userPreference = preferences.mapToPair(x -> {
             String splits[] = x.split(",");
             return new Tuple2<>(splits[0], splits[1]);
@@ -57,8 +57,9 @@ public class SparkDriver {
 
         // Cogroup the list of watched genre and the preferenced ones
         // Pairs: (userId, (genre watched, genre preferences))
-        JavaPairRDD<String, Tuple2<Iterable<String>, Iterable<String>>> table = userGenresWatched.cogroup(userPreference);
-        
+        JavaPairRDD<String, Tuple2<Iterable<String>, Iterable<String>>> table = userGenresWatched
+                .cogroup(userPreference);
+
         // Filter and keep only those lines associated to a misleading user
         JavaPairRDD<String, Tuple2<Iterable<String>, Iterable<String>>> filteredTable = table.filter(x -> {
 
@@ -105,11 +106,11 @@ public class SparkDriver {
 
             return misleadingGenres;
         });
-        
+
         // Write the result to the HDFS
         result.saveAsTextFile(outputPath);
 
-		// Close the Spark context
-		context.close();
-	}
+        // Close the Spark context
+        context.close();
+    }
 }
