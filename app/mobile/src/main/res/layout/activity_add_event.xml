@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddEventActivity">
+
+    <include layout="@layout/progress_overlay_white" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/add_event_iv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:contentDescription="@string/name"
+                    android:tint="@color/textColorSecondary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_event" />
+
+                <EditText
+                    android:id="@+id/add_event_et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:paddingStart="72dp"
+                    android:paddingEnd="0dp"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/name"
+                    android:inputType="textCapWords"
+                    android:maxLines="1"
+                    android:maxLength="15"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/add_event_iv_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:contentDescription="@string/description"
+                    android:tint="@color/textColorSecondary"
+                    app:layout_constraintBottom_toBottomOf="@+id/add_event_et_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_short_text" />
+
+                <EditText
+                    android:id="@+id/add_event_et_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:paddingStart="72dp"
+                    android:paddingEnd="0dp"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/description"
+                    android:inputType="textMultiLine"
+                    android:maxLines="1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/dividerColor"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="128dp">
+
+                <ImageView
+                    android:id="@+id/add_event_iv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:contentDescription="@string/datetime"
+                    android:tint="@color/textColorSecondary"
+                    app:layout_constraintBottom_toTopOf="@+id/add_event_tv_date_end"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_access_time" />
+
+                <TextView
+                    android:id="@+id/add_event_tv_date_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:paddingStart="72dp"
+                    android:paddingEnd="0dp"
+                    android:background="?android:selectableItemBackground"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="18sp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    app:layout_constraintBottom_toTopOf="@id/add_event_tv_date_end"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/add_event_tv_date_end"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:paddingStart="72dp"
+                    android:paddingEnd="0dp"
+                    android:background="?android:selectableItemBackground"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="18sp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_tv_date_start"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/dividerColor"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/add_event_iv_categories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="16dp"
+                    android:contentDescription="@string/description"
+                    android:tint="@color/textColorSecondary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_format_list_bulleted" />
+
+                <LinearLayout
+                    android:id="@+id/add_event_ll_categories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="72dp"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/dividerColor"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/add_event_iv_facilities"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="16dp"
+                    android:contentDescription="@string/description"
+                    android:tint="@color/textColorSecondary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_devices_other" />
+
+                <LinearLayout
+                    android:id="@+id/add_event_ll_facilities"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="72dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@id/add_event_sp_tv"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/add_event_sp_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="72dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/add_event_sp_playlist"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_ll_facilities"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <Spinner
+                    android:id="@+id/add_event_sp_playlist"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="72dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_sp_tv"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/dividerColor"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
